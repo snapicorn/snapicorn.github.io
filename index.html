@@ -1,15 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="images/logo_transparent.png" type="image/x-icon">
     <title>Snapicorn</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" href="assets/logos/logo_transparent.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
+
 <body>
-    
+    <!-- Home Screen -->
+    <div id="home-screen">
+        <div id="home-container">
+            <img src="assets/logos/logo_transparent.png" alt="Snapicorn Logo" class="logo">
+            <!-- <h1>Welcome to Snapicorn</h1> -->
+            <p class="tagline">Snap. Smile. Sparkle.</p>
+            <button id="startButton">Start Photobooth</button>
+        </div>
+    </div>
+    <!-- Booth Screen -->
+    <div id="booth-screen" style="display: none;">
+        <header>
+            <img src="assets/logos/logo_transparent.png" alt="Snapicorn Logo" class="logo">
+        </header>
+
+        <main>
+            <div id="camera-wrapper">
+                <div id="countdown"></div>
+                <video id="camera" autoplay playsinline></video>
+            </div>
+
+            <div class="preview-strip" id="preview-strip">
+            </div>
+            <div class="controls">
+                <button id="snap">📸 Snap</button>
+            </div>
+
+            <canvas id="canvas" style="display: none;"></canvas>
+            <div id="qrcode"></div>
+        </main>
+    </div>
+
+    <!-- Edit Screen -->
+    <div id="edit-screen" style="display: none;">
+        <h2>Edit Your Snap ✨</h2>
+        <div id="edit-area">
+            <div id="frame-overlay"></div>
+            <div id="strip-preview" style="display: flex; justify-content: center; margin-top: 1em;"></div>
+          </div>
+      
+          <div class="edit-controls">
+            <h3>Filters</h3>
+            <button onclick="applyFilter('none')">None</button>
+            <button onclick="applyFilter('grayscale(100%)')">Grayscale</button>
+            <button onclick="applyFilter('sepia(100%)')">Sepia</button>
+            <button onclick="applyFilter('blur(5px)')">Blur</button>
+      
+            <h3>Frames</h3>
+            <button onclick="applyFrame('none')">None</button>
+            <button onclick="applyFrame('assets/frames/frame1.png')">Frame 1</button>
+            <button onclick="applyFrame('assets/frames/frame2.png')">Frame 2</button>
+      
+            <h3>Decorations</h3>
+            <button onclick="addSticker('🎉')">🎉</button>
+            <button onclick="addSticker('🌟')">🌟</button>
+            <button onclick="addSticker('❤️')">❤️</button>
+      
+            <div style="margin-top: 1em;">
+              <button id="more" onclick="askForMore()">✨ More?</button>
+              <button id="download">⬇️ Download</button>
+              <button id="share">🔗 Share</button>
+              <!-- <button id="qr">📱 QR Code</button> -->
+            </div>
+          </div>
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="snapicorn.js"></script>
+    <script src="scripts/variables.js"></script>
+    <script src="scripts/camera.js"></script>
+    <script src="scripts/export.js"></script>
+    <script src="scripts/main.js"></script>
 </body>
+
 </html>

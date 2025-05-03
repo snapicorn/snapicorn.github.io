@@ -1,0 +1,264 @@
+@font-face {
+    font-family: 'Vintage Charm';
+    src: url('../assets/fonts/VintageCharm-Regular.otf') format('opentype');
+}
+
+/* === Reset & Base === */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f2ff;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(255, 105, 180, 0.8) 0%, transparent 70%);
+    filter: blur(100px);
+    z-index: 0;
+}
+
+button {
+    background-color: #9147ff;
+    color: white;
+    border: none;
+    padding: 0.75em 1.5em;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+button:hover {
+    background-color: #7723e5;
+}
+
+/* === Home Screen === */
+#home-screen {
+    text-align: center;
+    padding: 2em;
+    position: relative;
+    z-index: 1;
+}
+
+.logo {
+    width: 120px;
+    margin-bottom: 1.5em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tagline {
+    font-family: 'Vintage Charm';
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: black;
+    margin-bottom: 2em;
+    position: relative;
+    z-index: 1;
+    background-size: 300% 100%;
+}
+
+.tagline::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 60%);
+    transform: translateX(-50%);
+    animation: twinkle 2s infinite ease-in-out;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes sparkle {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.2);
+    }
+}
+
+footer {
+    margin-top: 2em;
+    font-size: 0.875rem;
+    color: #888;
+}
+
+footer a {
+    color: #9147ff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* === Booth Screen === */
+#booth-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+#booth-screen .logo {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+video {
+    width: 100%;
+    max-width: 480px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.controls {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1em;
+}
+
+#qrcode {
+    margin-top: 1em;
+}
+
+#countdown {
+    font-size: 3rem;
+    display: none;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#preview-strip {
+    display: flex;
+    opacity: 0;
+    gap: 0.5em;
+    /* overflow-x: auto; */
+    padding: 1em;
+    max-width: 90%;
+    /* margin: 0 auto; */
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* scroll-snap-type: x mandatory; */
+}
+
+.preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.preview-img {
+    height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+    scroll-snap-align: start;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#edit-screen {
+    text-align: center;
+    padding: 2em;
+}
+
+#edit-area {
+    position: relative;
+    display: inline-block;
+    max-width: 90%;
+    margin-bottom: 1em;
+}
+
+#editable-image {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+#frame-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.edit-controls button {
+    margin: 0.25em;
+}
+
+.edit-controls h3 {
+    margin-top: 1em;
+}
+
+#compiled-strip {
+    max-height: 400px;
+    border: 6px solid white;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
