@@ -258,7 +258,7 @@ main {
 
 #compiled-strip {
     max-height: 400px;
-    border: 6px solid white;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    /* border: 6px solid white; */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
     border-radius: 8px;
 }

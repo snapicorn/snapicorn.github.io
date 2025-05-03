@@ -132,8 +132,9 @@ function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, target
   const imgHeight = Math.round(imgWidth * aspectRatio);
   const padding = 50;
   const gap = 20;
-  
-  const totalHeight = (imgHeight * imageDataURLs.length) + (gap * (imageDataURLs.length - 1));
+  const watermarkHeight = 100;
+
+  const totalHeight = (imgHeight * imageDataURLs.length) + (gap * (imageDataURLs.length - 1)) + watermarkHeight;
   //const totalHeight = imgHeight * imageDataURLs.length;
 
   const canvas = document.createElement('canvas');
@@ -158,18 +159,41 @@ function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, target
       const yOffset = padding + index * (imgHeight + gap);
       ctx.drawImage(img, padding, yOffset, imgWidth, imgHeight);
       loadedCount++;
-      // stripHeight += imgHeight
-      // ctx.strokeStyle = 'white';
-      // ctx.lineWidth = 100;
-      // ctx.strokeRect(0, 0, imgWidth, stripHeight); // simple white border frame
 
       if (loadedCount === imageDataURLs.length) {
-        //ctx.drawImage(canvas, 0, 0, imgWidth, imgHeight);
-        //ctx.strokeStyle = 'white';
-        //ctx.lineWidth = 20;
-        //ctx.strokeRect(0, 0, imgWidth, stripHeight); // simple white border frame
-        finalStrip = canvas.toDataURL('image/png');
-        showFinalStrip(finalStrip);
+        // ctx.fillStyle = '#000'; // watermark color
+        // ctx.font = 'bold 24px Arial';
+        // ctx.textAlign = 'center';
+        // ctx.fillText('Snapicorn Photobooth', imgWidth / 2, totalHeight - watermarkHeight / 2 + 10);
+
+        // finalStrip = canvas.toDataURL('image/png');
+        // showFinalStrip(finalStrip);
+        //canvas.height += watermarkHeight;
+
+        const watermarkImg = new Image();
+        watermarkImg.src = '../assets/logos/logo_transparent.png';
+
+        watermarkImg.onload = () => {
+          const maxLogoWidth = imgWidth * 0.4;
+          const maxLogoHeight = watermarkHeight * 0.8;
+        
+          const logoAspectRatio = watermarkImg.width / watermarkImg.height;
+        
+          let logoWidth = maxLogoWidth;
+          let logoHeight = logoWidth / logoAspectRatio;
+        
+          if (logoHeight > maxLogoHeight) {
+            logoHeight = maxLogoHeight;
+            logoWidth = logoHeight * logoAspectRatio;
+          }
+        
+          const x = (canvas.width - logoWidth) / 2;
+          const y = canvas.height - watermarkHeight + (watermarkHeight - logoHeight) / 2;
+          ctx.drawImage(watermarkImg, x, y, logoWidth, logoHeight);
+        
+          const finalStrip = canvas.toDataURL('image/png');
+          showFinalStrip(finalStrip);
+        };
       }
     };
   });
