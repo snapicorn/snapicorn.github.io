@@ -13,23 +13,14 @@ function updatePreview(imageDataURL) {
     wrapper.appendChild(container);
 }
 
-function showFinalStrip(dataURL) {
-    const stripContainer = document.getElementById('strip-preview');
-    stripContainer.innerHTML = ''; // clear previous
-    const stripImg = document.createElement('img');
-    stripImg.src = dataURL;
-    stripImg.id = 'compiled-strip';
-
-    stripContainer.appendChild(stripImg);
-    stopCamera();
-}
-
 function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, targetWidth = 600) {
     const aspectRatio = originalHeight / originalWidth;
     const imgWidth = targetWidth;
     const imgHeight = Math.round(imgWidth * aspectRatio);
+    console.log(imgWidth);
+    console.log(imgHeight);
     const padding = 50;
-    const gap = 20;
+    const gap = 30;
     const watermarkHeight = 100;
 
     const totalHeight = (imgHeight * imageDataURLs.length) + (gap * (imageDataURLs.length - 1)) + watermarkHeight;
@@ -40,12 +31,10 @@ function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, target
     canvas.height = totalHeight + padding * 2;
 
     const ctx = canvas.getContext('2d');
-
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     let loadedCount = 0;
-
     imageDataURLs.forEach((dataURL, index) => {
         const img = new Image();
         img.src = dataURL;
@@ -78,10 +67,22 @@ function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, target
                     const y = (canvas.height - (padding / 2) - watermarkHeight) + (watermarkHeight - logoHeight) / 2;
                     ctx.drawImage(watermarkImg, x, y, logoWidth, logoHeight);
 
-                    const finalStrip = canvas.toDataURL('image/png');
+                    finalStrip = canvas.toDataURL('image/png');
+                    finalCanvas = canvas;
                     showFinalStrip(finalStrip);
                 };
             }
         };
     });
+}
+
+function showFinalStrip(dataURL) {
+    const stripContainer = document.getElementById('strip-preview');
+    stripContainer.innerHTML = ''; // clear previous
+    const stripImg = document.createElement('img');
+    stripImg.src = dataURL;
+    stripImg.id = 'compiled-strip';
+
+    stripContainer.appendChild(stripImg);
+    stopCamera();
 }

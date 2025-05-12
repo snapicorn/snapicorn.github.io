@@ -52,24 +52,23 @@
           </div>
       
           <div class="edit-controls">
-            <h3>Filters</h3>
+            <!-- <h3>Filters</h3>
             <button onclick="applyFilter('none')">None</button>
             <button onclick="applyFilter('grayscale(100%)')">Grayscale</button>
             <button onclick="applyFilter('sepia(100%)')">Sepia</button>
-            <button onclick="applyFilter('blur(5px)')">Blur</button>
+            <button onclick="applyFilter('blur(5px)')">Blur</button> -->
       
             <h3>Frames</h3>
-            <button onclick="applyFrame('none')">None</button>
-            <button onclick="applyFrame('assets/frames/frame1.png')">Frame 1</button>
-            <button onclick="applyFrame('assets/frames/frame2.png')">Frame 2</button>
+            <button class="frameButton" data-frame="none">None</button>
+            <button class="frameButton" data-frame="purple">Purple</button>
       
-            <h3>Decorations</h3>
+            <!-- <h3>Decorations</h3>
             <button onclick="addSticker('🎉')">🎉</button>
             <button onclick="addSticker('🌟')">🌟</button>
-            <button onclick="addSticker('❤️')">❤️</button>
+            <button onclick="addSticker('❤️')">❤️</button> -->
       
             <div style="margin-top: 1em;">
-              <button id="more" onclick="askForMore()">✨ More?</button>
+              <button id="more" onclick="restartPhotobooth()">✨ More?</button>
               <button id="download">⬇️ Download</button>
               <button id="share">🔗 Share</button>
               <!-- <button id="qr">📱 QR Code</button> -->

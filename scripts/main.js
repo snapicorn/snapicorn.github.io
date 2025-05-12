@@ -9,6 +9,13 @@ snapButton.addEventListener('click', () => {
   takePhotosSequentially(rowCount);
 });
 
+frameButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    let frameName = button.getAttribute('data-frame');
+    applyFrame(frameName);
+  })
+})
+
 function saveEditedImage() {
   alert('Exporting full composite coming soon 👀');
 }

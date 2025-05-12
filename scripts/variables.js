@@ -8,12 +8,13 @@ const video = document.getElementById('camera');
 const wrapper = document.getElementById('preview-strip');
 const downloadButton = document.getElementById('download');
 const shareButton = document.getElementById('share');
-
+const frameButtons = document.querySelectorAll('.frameButton');
 
 let latestImageDataURL = '';
 let finalStrip = '';
+let finalCanvas = '';
 let columnCount = 1
-let rowCount = 3
+let rowCount = 4
 
 let imageCount = 0;
 let imageURLs = [];
