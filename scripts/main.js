@@ -16,7 +16,7 @@ function startCountdown(callback) {
       clearInterval(interval);
       countdownEl.style.display = 'none';
       callback();
-    } else // if (count != 0) 
+    } else
     {
       countdownEl.textContent = count;
     }
@@ -116,14 +116,16 @@ function goBackToBooth() {
 }
 
 function saveEditedImage() {
-  alert('Exporting full composite coming soon 👀 (but this is where you’d do it)');
+  alert('Exporting full composite coming soon 👀');
 }
 
 function askForMore() {
   document.getElementById('edit-screen').style.display = 'none';
   boothScreen.style.display = 'block';
   imageCount = 0; // reset the counter
-  previewStrip.innerHTML = ''; // clear previous images                                                                                               
+  previewStrip.innerHTML = ''; // clear previous images
+  previewStrip.style.opacity = 0;
+  startCamera();
 }
 
 function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, targetWidth = 600) {

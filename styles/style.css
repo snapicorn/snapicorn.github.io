@@ -195,6 +195,7 @@ main {
 #preview-strip {
     display: flex;
     opacity: 0;
+    min-height: 50px;
     gap: 0.5em;
     /* overflow-x: auto; */
     padding: 1em;
