@@ -53,6 +53,11 @@ button:hover {
     background-color: #7723e5;
 }
 
+h2 {
+    font-size: 2rem;
+    cursor: default;
+}
+
 /* === Home Screen === */
 #home-screen {
     text-align: center;
@@ -259,8 +264,17 @@ main {
 }
 
 #compiled-strip {
-    max-height: 400px;
+    max-width: 250px;
     /* border: 6px solid white; */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
     border-radius: 8px;
+}
+
+.sticker {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-size: 3rem;
+    cursor: move;
+    user-select: none;
 }

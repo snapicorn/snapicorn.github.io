@@ -10,13 +10,13 @@ function applyFilter(filter) {
 }
 
 function applyFrame(frameName) {
-    let baseStripImage = new Image();
-    baseStripImage.src = finalStrip;
+    let baseStrip = new Image();
+    baseStrip.src = finalStrip;
 
-    baseStripImage.onload = () => {
+    baseStrip.onload = () => {
         const ctx = finalCanvas.getContext('2d');
         ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
-        ctx.drawImage(baseStripImage, 0, 0, finalCanvas.width, finalCanvas.height);
+        ctx.drawImage(baseStrip, 0, 0, finalCanvas.width, finalCanvas.height);
 
         if (frameName == 'none') {
             showFinalStrip(finalCanvas.toDataURL('image/png'));
@@ -40,27 +40,26 @@ function applyFrame(frameName) {
     }
 }
 
-function addSticker(emoji) {
+function addSticker(content) {
     const sticker = document.createElement('div');
-    sticker.textContent = emoji;
-    sticker.style.position = 'absolute';
-    sticker.style.left = '50%';
-    sticker.style.top = '50%';
-    sticker.style.fontSize = '2rem';
-    sticker.style.transform = 'translate(-50%, -50%)';
-    sticker.style.cursor = 'move';
+    sticker.innerText = content;
+    sticker.className = 'sticker';
+
     sticker.setAttribute('draggable', true);
 
     sticker.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', null);
-        e.dataTransfer.effectAllowed = 'move';
+        // e.dataTransfer.setData('text/plain', null);
+        // e.dataTransfer.effectAllowed = 'move';
         sticker.dataset.dragging = true;
     });
 
     sticker.addEventListener('dragend', (e) => {
-        sticker.style.left = `${e.pageX - sticker.offsetWidth / 2}px`;
-        sticker.style.top = `${e.pageY - sticker.offsetHeight / 2}px`;
+        const rect = sticker.parentElement.getBoundingClientRect();
+        const x = e.clientX - rect.left - sticker.offsetWidth / 2;
+        const y = e.clientY - rect.top - sticker.offsetHeight / 2;
+        sticker.style.left = `${x}px`;
+        sticker.style.top = `${y}px`;
     });
 
-    document.getElementById('edit-area').appendChild(sticker);
+    document.getElementById('strip-preview').appendChild(sticker);
 }
