@@ -10,7 +10,8 @@ function startCountdown(callback) {
             clearInterval(interval);
             countdownEl.style.display = 'none';
             callback();
-        } else {
+        }
+        else {
             countdownEl.textContent = count;
         }
     }, 1000);
@@ -18,7 +19,7 @@ function startCountdown(callback) {
 
 function takePhotosSequentially(count) {
     if (imageCount >= count) {
-        goToEditScreen();
+        // goToEditScreen();
         return;
     }
 
@@ -39,9 +40,8 @@ function takePhotosSequentially(count) {
         const dataURL = canvas.toDataURL('image/png');
         latestImageDataURL = dataURL;
         imageURLs.push(latestImageDataURL);
-        updatePreview(dataURL);
+        updatePreview(dataURL, imageCount);
         imageCount++;
         takePhotosSequentially(count); // recurse after photo taken
-
     });
 }

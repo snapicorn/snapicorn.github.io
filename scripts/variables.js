@@ -15,6 +15,7 @@ let finalStrip = '';
 let finalCanvas = '';
 let columnCount = 1
 let rowCount = 4
+let previewImages = [];
 
 let imageCount = 0;
 let imageURLs = [];

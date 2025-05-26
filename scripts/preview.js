@@ -1,16 +1,17 @@
-function updatePreview(imageDataURL) {
-    const container = document.createElement('div');
-    container.className = 'preview-wrapper';
-    const img = document.createElement('img');
-    img.src = imageDataURL;
-    img.className = 'preview-img';
-    img.draggable = true;
-    img.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', img.src);
-    });
-
-    container.appendChild(img);
-    wrapper.appendChild(container);
+function updatePreview(imageDataURL, index) {
+    // const container = document.createElement('div');
+    // container.className = 'preview-wrapper';
+    // const img = document.createElement('img');
+    // img.src = imageDataURL;
+    // img.className = 'preview-img';
+    // img.draggable = true;
+    // img.addEventListener('dragstart', (e) => {
+    //     e.dataTransfer.setData('text/plain', img.src);
+    // });
+    
+    // container.appendChild(img);
+    // wrapper.appendChild(container);
+    previewImages[index].src = imageDataURL;
 }
 
 function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, targetWidth = 600) {
