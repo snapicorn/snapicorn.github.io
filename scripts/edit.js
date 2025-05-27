@@ -1,6 +1,4 @@
 function goToEditScreen() {
-    boothScreen.style.display = 'none';
-    document.getElementById('edit-screen').style.display = 'block';
     generatePhotoStrip(imageURLs, video.videoWidth, video.videoHeight);
 }
 

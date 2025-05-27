@@ -19,7 +19,7 @@ function startCountdown(callback) {
 
 function takePhotosSequentially(count) {
     if (imageCount >= count) {
-        // goToEditScreen();
+        goToEditScreen();
         return;
     }
 

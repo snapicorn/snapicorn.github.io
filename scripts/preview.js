@@ -8,10 +8,11 @@ function updatePreview(imageDataURL, index) {
     // img.addEventListener('dragstart', (e) => {
     //     e.dataTransfer.setData('text/plain', img.src);
     // });
-    
+
     // container.appendChild(img);
     // wrapper.appendChild(container);
     previewImages[index].src = imageDataURL;
+    previewImages[index].style.opacity = 1;
 }
 
 function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, targetWidth = 600) {
@@ -84,6 +85,28 @@ function showFinalStrip(dataURL) {
     stripImg.src = dataURL;
     stripImg.id = 'compiled-strip';
 
+    stripImg.onload = () => {
+        boothScreen.style.display = 'none';
+        document.getElementById('edit-screen').style.display = 'block';
+    }
+
     stripContainer.appendChild(stripImg);
     stopCamera();
+}
+
+function addPlaceholderImages() {
+    for (let x = 0; x < rowCount; x++) {
+        const container = document.createElement('div');
+        container.className = 'preview-wrapper';
+        const img = document.createElement('img');
+        img.src = '../assets/imgs/placeholder-white.png';
+        img.className = 'preview-img';
+        img.draggable = true;
+        img.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', img.src);
+        });
+        previewImages.push(img);
+        container.appendChild(img);
+        wrapper.appendChild(container);
+    }
 }
