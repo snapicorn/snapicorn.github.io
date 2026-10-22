@@ -1,5 +1,6 @@
 function goToEditScreen() {
     generatePhotoStrip(imageURLs, video.videoWidth, video.videoHeight);
+    stopCamera();
 }
 
 function applyFilter(filter) {
@@ -7,35 +8,42 @@ function applyFilter(filter) {
     img.style.filter = filter;
 }
 
-function applyFrame(frameName) {
-    let baseStrip = new Image();
-    baseStrip.src = finalStrip;
-
-    baseStrip.onload = () => {
-        const ctx = finalCanvas.getContext('2d');
-        ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
-        ctx.drawImage(baseStrip, 0, 0, finalCanvas.width, finalCanvas.height);
-
-        if (frameName == 'none') {
-            showFinalStrip(finalCanvas.toDataURL('image/png'));
-            return;
+async function applyFrame(frameName) {
+    if (sessionTransitioning || !finalCanvas || !finalStrip) return;
+    const generation = captureGeneration;
+    const request = ++frameRequest;
+    const isCurrent = () => generation === captureGeneration && request === frameRequest;
+    sessionBusy = true;
+    setExportEnabled(false);
+    setCameraStatus('edit-camera-status', '');
+    try {
+        if (frameName !== 'none' && frameName !== 'purple') throw new Error('Unknown frame.');
+        const base = await loadSessionImage(finalStrip, generation);
+        if (!isCurrent()) return;
+        const frame = frameName === 'purple'
+            ? await loadSessionImage('../assets/frames/purple.png', generation) : null;
+        if (!isCurrent()) return;
+        const canvas = composeFrame(base, frame, () => document.createElement('canvas'));
+        await showFinalStrip(canvas.toDataURL('image/png'), generation, isCurrent);
+        if (!isCurrent()) return;
+        finalCanvas = canvas;
+        updateFrameSelection(frameName);
+    } catch {
+        if (isCurrent()) {
+            setCameraStatus('edit-camera-status', 'Could not apply that frame. Your strip is safe. Select a frame to retry.');
         }
-
-        const frame = new Image();
-        let frameUrl = ''
-        switch (frameName) {
-            case 'purple':
-                frameUrl = '../assets/frames/purple.png';
-                break;
+    } finally {
+        if (isCurrent()) {
+            sessionBusy = false;
+            setExportEnabled(true);
         }
-
-        frame.src = frameUrl;
-        frame.onload = () => {
-            ctx.drawImage(frame, 0, 0, finalCanvas.width, finalCanvas.height);
-            showFinalStrip(finalCanvas.toDataURL('image/png'));
-        }
-
     }
+}
+
+function updateFrameSelection(frameName) {
+    frameButtons.forEach(button => {
+        button.setAttribute('aria-pressed', String(button.getAttribute('data-frame') === frameName));
+    });
 }
 
 function addSticker(content) {

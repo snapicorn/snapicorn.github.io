@@ -1,0 +1,13 @@
+{
+  "name": "snapicorn",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint \"scripts/*.js\" \"test/*.test.js\"",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0"
+  }
+}

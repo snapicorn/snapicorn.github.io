@@ -1,0 +1,283 @@
+/* Final approved values from the handoff's styles.css + magic.css, 22 Oct 2026. */
+@font-face {
+  font-family: "Fraunces";
+  src: url("../assets/fonts/fraunces-latin-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("../assets/fonts/dm-sans-latin-400.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("../assets/fonts/dm-sans-latin-500.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("../assets/fonts/dm-sans-latin-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  --paper: #fffaf2;
+  --ink: #332540;
+  --muted: #746384;
+  --purple: #7c49c6;
+  --lavender: #eee4fc;
+  --line: #ded2eb;
+  --white: #ffffff;
+  --focus: #9564d1;
+  --action-hover: #713eb9;
+  --action-depth: #5e309d;
+  --error-surface: #f9e8ed;
+  --error-text: #85273f;
+  --danger: #a62b50;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "DM Sans", Arial, sans-serif;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-36: 36px;
+  --space-40: 40px;
+  --space-44: 44px;
+  --space-48: 48px;
+  --radius-control: 18px;
+  --radius-card: 22px;
+  --radius-small: 16px;
+  --control-height: 51px;
+  --feedback-duration: 0.16s;
+  --card-shadow: 0 12px 28px #33254018;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-synthesis: none;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--serif);
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+h2 {
+  font-size: 48px;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+a {
+  color: var(--purple);
+  text-underline-offset: 4px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: var(--control-height);
+  max-width: 100%;
+  padding: 15px 23px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: var(--purple);
+  color: var(--white);
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  box-shadow: 0 5px 0 var(--action-depth), 0 10px 18px #53307820;
+  transition: background var(--feedback-duration), transform var(--feedback-duration);
+}
+
+button:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--action-hover);
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--action-depth);
+}
+
+button.secondary {
+  color: var(--ink);
+  font-weight: 500;
+  background: var(--white);
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+button.secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--lavender);
+  border-color: var(--purple);
+}
+
+button.secondary:active:not(:disabled):not([aria-disabled="true"]) {
+  box-shadow: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  opacity: 0.42;
+  cursor: default;
+  box-shadow: none;
+}
+
+a[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+.card {
+  padding: var(--space-24);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--white);
+}
+
+/* Shared surface only; this does not introduce a dialog flow. */
+dialog {
+  width: 600px;
+  max-width: calc(100% - 32px);
+  max-height: 90dvh;
+  margin: auto;
+  padding: var(--space-28);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 18px 60px #22132c22;
+}
+
+dialog::backdrop {
+  background: #24172c70;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.brand .logo {
+  width: 65px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-family: var(--serif);
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.brand-sparkle {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.pixel-art {
+  image-rendering: pixelated;
+}
+
+[role="status"]:not(:empty) {
+  margin-top: var(--space-20);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-small);
+  color: var(--error-text);
+  background: var(--error-surface);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  h2 {
+    font-size: 36px;
+  }
+
+  .brand .logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .brand-name {
+    font-size: 30px;
+  }
+}
+
+/* Keep the camera mirror transform; suppress only tactile button movement. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  button {
+    transform: none !important;
+  }
+}

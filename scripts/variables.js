@@ -19,3 +19,11 @@ let previewImages = [];
 
 let imageCount = 0;
 let imageURLs = [];
+let captureGeneration = 0;
+let sessionTransitioning = false;
+let countdownTimer = null;
+// Capture and export stay locked until the latest composition request settles.
+let sessionBusy = false;
+const pendingImageLoads = new Set();
+
+let frameRequest = 0;
