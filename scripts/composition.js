@@ -28,7 +28,7 @@ function composePhotoStrip(photos, logo, originalWidth, originalHeight, createCa
     return canvas;
 }
 
-function composeFrame(base, frame, createCanvas) {
+function composeFrame(base, frame, createCanvas, stickers = [], stickerImages = []) {
     const canvas = createCanvas();
     canvas.width = base.width;
     canvas.height = base.height;
@@ -36,5 +36,21 @@ function composeFrame(base, frame, createCanvas) {
     if (!ctx) throw new Error('Canvas is unavailable.');
     ctx.drawImage(base, 0, 0, canvas.width, canvas.height);
     if (frame) ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+    stickers.forEach((sticker, index) => {
+        const image = stickerImages[index];
+        if (!image || !image.width || !image.height) throw new Error('Sticker image is unavailable.');
+        const size = sticker.size * canvas.width;
+        const scale = Math.min(size / image.width, size / image.height);
+        ctx.save();
+        try {
+            ctx.imageSmoothingEnabled = false;
+            ctx.translate(sticker.x * canvas.width, sticker.y * canvas.height);
+            ctx.rotate(sticker.rotation * Math.PI / 180);
+            ctx.drawImage(image, -image.width * scale / 2, -image.height * scale / 2,
+                image.width * scale, image.height * scale);
+        } finally {
+            ctx.restore();
+        }
+    });
     return canvas;
 }

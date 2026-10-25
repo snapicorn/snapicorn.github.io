@@ -10,20 +10,34 @@ const downloadButton = document.getElementById('download');
 const shareButton = document.getElementById('share');
 const frameButtons = document.querySelectorAll('.frameButton');
 
-let latestImageDataURL = '';
-let finalStrip = '';
-let finalCanvas = '';
-let columnCount = 1
-let rowCount = 4
+const rowCount = 4;
+// Durable only for this page lifetime. main.js owns photo commits and reset.
+const session = {
+  id: 0,
+  photos: [], // Ordered { source, width, height } records; candidates never enter here.
+  geometry: null, // Initial capture aspect, retained across mixed-aspect retakes.
+  frame: 'none',
+  stickerHistory: StickerHistory.create(),
+  revision: 0,
+  output: { base: '', canvas: null },
+};
+const ui = {
+  destination: 'home',
+  phase: 'camera-off',
+  retake: null,
+  menuOpen: false,
+  dialogInvoker: null,
+  selectedSticker: null,
+  tool: 'frame',
+  zoom: 100,
+};
+// Cancellation identity is independent of session identity and camera startup.
+const operations = {
+  generation: 0,
+  countdownTimer: null,
+  busy: false,
+  renderRequest: 0,
+  compositionStatus: 'idle',
+  pendingImageLoads: new Set(),
+};
 let previewImages = [];
-
-let imageCount = 0;
-let imageURLs = [];
-let captureGeneration = 0;
-let sessionTransitioning = false;
-let countdownTimer = null;
-// Capture and export stay locked until the latest composition request settles.
-let sessionBusy = false;
-const pendingImageLoads = new Set();
-
-let frameRequest = 0;

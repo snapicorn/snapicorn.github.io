@@ -1,7 +1,8 @@
 function updatePreview(imageDataURL, index) {
     previewImages[index].src = imageDataURL;
+    previewImages[index].alt = `Captured photo ${index + 1} of ${rowCount}`;
     previewImages[index].style.opacity = 1;
-    updateCaptureProgress(index + 1);
+    updateCaptureProgress(session.photos.length);
 }
 
 function updateCaptureProgress(completed = 0) {
@@ -28,15 +29,15 @@ function loadSessionImage(source, generation, image = new Image()) {
             if (settled) return;
             settled = true;
             clearTimeout(timeout);
-            pendingImageLoads.delete(cancel);
+            operations.pendingImageLoads.delete(cancel);
             image.onload = null;
             image.onerror = null;
             if (error) reject(error);
             else resolve(image);
         }
-        pendingImageLoads.add(cancel);
+        operations.pendingImageLoads.add(cancel);
         image.onload = () => {
-            if (generation !== captureGeneration || !image.width || !image.height) {
+            if (generation !== operations.generation || !image.width || !image.height) {
                 finish(new Error('Image is unavailable.'));
             } else finish();
         };
@@ -49,51 +50,23 @@ function loadSessionImage(source, generation, image = new Image()) {
     });
 }
 
-async function generatePhotoStrip(imageDataURLs, originalWidth, originalHeight, targetWidth = 600) {
-    const generation = captureGeneration;
-    try {
-        if (imageDataURLs.length !== rowCount || originalWidth <= 0 || originalHeight <= 0) {
-            throw new Error('Four usable photos are required.');
-        }
-        const photos = [];
-        for (const source of [...imageDataURLs]) {
-            photos.push(await loadSessionImage(source, generation));
-            if (generation !== captureGeneration) return;
-        }
-        const logo = await loadSessionImage('../assets/logos/logo_transparent.png', generation);
-        if (generation !== captureGeneration) return;
-        const canvas = composePhotoStrip(photos, logo, originalWidth, originalHeight,
-            () => document.createElement('canvas'), targetWidth);
-        const dataURL = canvas.toDataURL('image/png');
-        await showFinalStrip(dataURL, generation);
-        if (generation !== captureGeneration) return;
-        finalStrip = dataURL;
-        finalCanvas = canvas;
-        updateFrameSelection('none');
-        sessionBusy = false;
-        setExportEnabled(true);
-    } catch {
-        if (generation === captureGeneration) {
-            exitPhotobooth('Could not build your photo strip. Select Start Photobooth to retry with four new photos.');
-        }
-    }
+function generatePhotoStrip() {
+    document.getElementById('review-heading').focus();
+    return requestComposition();
 }
-
-async function showFinalStrip(dataURL, generation = captureGeneration, isCurrent = () => true) {
+async function showFinalStrip(dataURL, generation = operations.generation, isCurrent = () => true) {
     const stripImg = document.createElement('img');
     stripImg.id = 'compiled-strip';
     stripImg.alt = 'Your four-photo Snapicorn strip';
     await loadSessionImage(dataURL, generation, stripImg);
-    if (generation !== captureGeneration || !isCurrent()) return;
+    if (generation !== operations.generation || !isCurrent()) return;
     const stripContainer = document.getElementById('strip-preview');
     stripContainer.innerHTML = '';
     stripContainer.appendChild(stripImg);
+    const stage = document.getElementById('strip-stage');
+    stage.style.aspectRatio = `${stripImg.naturalWidth} / ${stripImg.naturalHeight}`;
+    stage.style.setProperty('--strip-ratio', stripImg.naturalWidth / stripImg.naturalHeight);
     updateFrameThumbnails(dataURL);
-    const enteringEditor = document.getElementById('edit-screen').style.display === 'none';
-    boothScreen.style.display = 'none';
-    document.getElementById('edit-screen').style.display = 'block';
-    if (enteringEditor) document.getElementById('edit-heading')?.focus();
-    stopCamera();
 }
 function addPlaceholderImages() {
     for (let x = 0; x < rowCount; x++) {
@@ -105,8 +78,8 @@ function addPlaceholderImages() {
         number.setAttribute('aria-hidden', 'true');
         container.appendChild(number);
         const img = document.createElement('img');
-        img.src = '../assets/imgs/placeholder-white.png';
-        img.alt = `Photo ${x + 1} of ${rowCount}`;
+        img.src = 'assets/imgs/placeholder-white.png';
+        img.alt = `Photo ${x + 1} of ${rowCount}, not captured yet`;
         img.className = 'preview-img';
         img.draggable = false;
         previewImages.push(img);

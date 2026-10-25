@@ -94,3 +94,44 @@ test('invalid photo counts and dimensions fail before allocating output', () => 
     assert.throws(() => compositor.composePhotoStrip(photos, {}, width, height, create), /required/);
   }
 });
+
+test('ordered stickers draw after frame on fresh canvases, smoothing is scoped even on failure', () => {
+  const canvases = [];
+  function factory() {
+    const events = [];
+    const ctx = {
+      imageSmoothingEnabled: true,
+      save() { events.push(['save', this.imageSmoothingEnabled]); },
+      restore() { this.imageSmoothingEnabled = true; events.push(['restore']); },
+      translate(...args) { events.push(['translate', ...args]); },
+      rotate(...args) { events.push(['rotate', ...args]); },
+      drawImage(image, ...rect) {
+        events.push(['draw', image.name, this.imageSmoothingEnabled, ...rect]);
+        if (image.fail) throw new Error('drawing failed');
+      },
+    };
+    const canvas = { events, ctx, getContext: () => ctx };
+    canvases.push(canvas);
+    return canvas;
+  }
+  const base = { name: 'photos and watermark', width: 700, height: 3490 };
+  const frame = { name: 'purple' };
+  const images = ['star', 'heart'].map(name => ({ name, width: 1024, height: 1024 }));
+  images[1].width = 1448;
+  images[1].height = 1086;
+  const stickers = [{ x: 0.2, y: 0.3, size: 0.2, rotation: -45 }, { x: 0.8, y: 0.9, size: 0.4, rotation: 180 }];
+  const first = compositor.composeFrame(base, frame, factory, stickers, images);
+  const next = compositor.composeFrame(base, frame, factory, stickers, images);
+  assert.notEqual(first, next);
+  assert.deepEqual(first.events, next.events);
+  assert.deepEqual(first.events.filter(event => event[0] === 'draw').map(event => event.slice(1, 3)),
+    [['photos and watermark', true], ['purple', true], ['star', false], ['heart', false]]);
+  assert.equal(first.width, 700);
+  assert.equal(first.height, 3490);
+  assert.deepEqual(first.events.find(event => event[0] === 'translate'), ['translate', 140, 1047]);
+  assert.equal(first.ctx.imageSmoothingEnabled, true);
+  assert.deepEqual(first.events.filter(event => event[0] === 'draw').at(-1).slice(3), [-140, -105, 280, 210]);
+  assert.throws(() => compositor.composeFrame(base, null, factory, [stickers[0]], [{ ...images[0], fail: true }]), /drawing failed/);
+  assert.equal(canvases.at(-1).ctx.imageSmoothingEnabled, true);
+  assert.deepEqual(canvases.at(-1).events.at(-1), ['restore']);
+});

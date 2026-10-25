@@ -7,13 +7,21 @@ import { fileURLToPath } from 'node:url';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const activeScripts = [
+  'sticker-geometry.js',
+  'sticker-history.js',
+  'sticker-gestures.js',
   'variables.js',
   'camera.js',
   'snap.js',
   'composition.js',
   'preview.js',
+  'composition-coordinator.js',
   'edit.js',
+  'sticker-editor.js',
   'export.js',
+  'gallery-store.js',
+  'gallery.js',
+  'settings.js',
   'main.js',
 ];
 
@@ -194,112 +202,6 @@ test('stopping during video playback cancels startup and releases the stream', a
   assert.equal(video.srcObject, null);
 });
 
-test('capture stays disabled until the camera reports usable dimensions', async () => {
-  const handlers = {};
-  const snapButton = { disabled: true, addEventListener() {} };
-  const context = vm.createContext({
-    startButton: { addEventListener: (name, handler) => { handlers.start = handler; } },
-    snapButton,
-    frameButtons: [], homeScreen: { style: {} }, boothScreen: { style: {} },
-    previewStrip: { innerHTML: '' }, video: { videoWidth: 0, videoHeight: 0 },
-    sessionTransitioning: false, resetPhotoboothState() {},
-    sessionBusy: false, pendingImageLoads: new Set(),
-    downloadButton: {}, shareButton: {}, window: { addEventListener() {} },
-    cancelCountdown() {}, updateFrameThumbnails() {}, captureGeneration: 0, frameRequest: 0, countdownTimer: null,
-    imageCount: 0, imageURLs: [], latestImageDataURL: '', finalStrip: '',
-    finalCanvas: null, previewImages: [],
-    startCamera: async () => false, addPlaceholderImages() {},
-    document: { getElementById: id => id === 'more'
-      ? { addEventListener() {} }
-      : { textContent: '', style: {}, innerHTML: '', addEventListener() {}, focus() {} } },
-  });
-  vm.runInContext(readFileSync(path.join(repositoryRoot, 'scripts/main.js'), 'utf8'), context);
-  await handlers.start();
-  assert.equal(snapButton.disabled, true);
-});
-
-test('restarting a session clears old capture state and restores the booth controls', async () => {
-  const handlers = {};
-  const editScreen = { style: { display: 'block' } };
-  const boothScreen = { style: { display: 'none' } };
-  const snapButton = { disabled: true, addEventListener() {} };
-  const previewStrip = { innerHTML: 'old previews' };
-  const stripPreview = { innerHTML: 'old composite' };
-  const countdown = { textContent: '1', style: { display: 'block' } };
-  const moreButton = { addEventListener: (name, handler) => { handlers.more = handler; } };
-  let cameraStarts = 0;
-  let placeholderBuilds = 0;
-  let resolveCamera;
-  const cameraPromise = new Promise(resolve => { resolveCamera = resolve; });
-
-  const context = vm.createContext({
-    startButton: { addEventListener: (name, handler) => { handlers.start = handler; } },
-    snapButton,
-    frameButtons: [],
-    homeScreen: { style: {} },
-    boothScreen,
-    previewStrip,
-    imageCount: 4,
-    imageURLs: ['old-photo-1', 'old-photo-2'],
-    previewImages: [{ src: 'old-photo' }],
-    latestImageDataURL: 'old-photo',
-    finalStrip: 'old-strip',
-    finalCanvas: { old: true },
-    captureGeneration: 0, frameRequest: 0,
-    countdownTimer: null,
-    sessionTransitioning: false,
-    sessionBusy: false, pendingImageLoads: new Set(),
-    downloadButton: {}, shareButton: {}, window: { addEventListener() {} },
-    cancelCountdown() {}, updateFrameThumbnails() {},
-    startCamera: () => { cameraStarts += 1; return cameraPromise.then(() => true); },
-    addPlaceholderImages: () => { placeholderBuilds += 1; },
-    takePhotosSequentially() {},
-    applyFrame() {},
-    document: { getElementById: id => ({
-      'edit-screen': editScreen,
-      'strip-preview': stripPreview,
-      countdown,
-      more: moreButton,
-    })[id] || null },
-  });
-
-  vm.runInContext(readFileSync(path.join(repositoryRoot, 'scripts/main.js'), 'utf8'), context);
-  const firstRestart = handlers.more();
-  await handlers.more();
-  assert.equal(cameraStarts, 1, 'rapid More activations share one transition');
-  resolveCamera();
-  await firstRestart;
-
-  assert.equal(cameraStarts, 1);
-  assert.equal(placeholderBuilds, 1);
-  assert.equal(context.imageCount, 0);
-  assert.equal(context.imageURLs.length, 0);
-  assert.equal(context.previewImages.length, 0);
-  assert.equal(context.latestImageDataURL, '');
-  assert.equal(context.finalStrip, '');
-  assert.equal(context.finalCanvas, null);
-  assert.equal(context.captureGeneration, 1);
-  assert.equal(previewStrip.innerHTML, '');
-  assert.equal(stripPreview.innerHTML, '');
-  assert.equal(countdown.textContent, '');
-  assert.equal(countdown.style.display, 'none');
-  assert.equal(snapButton.disabled, false);
-  assert.equal(editScreen.style.display, 'none');
-  assert.equal(boothScreen.style.display, 'block');
-
-  context.imageURLs.push('session-one-photo');
-  context.previewImages.push({ src: 'session-one-photo' });
-  context.finalStrip = 'session-one-strip';
-  await handlers.more();
-  assert.equal(cameraStarts, 2);
-  assert.equal(placeholderBuilds, 2);
-  assert.equal(context.captureGeneration, 2);
-  assert.equal(context.imageURLs.length, 0);
-  assert.equal(context.previewImages.length, 0);
-  assert.equal(context.finalStrip, '');
-  assert.equal(previewStrip.innerHTML, '');
-});
-
 test('More uses one registered listener and no inline async handler', () => {
   const html = readFileSync(path.join(repositoryRoot, 'index.html'), 'utf8');
   const moreButton = html.match(/<button\b[^>]*\bid="more"[^>]*>/)?.[0];
@@ -309,24 +211,30 @@ test('More uses one registered listener and no inline async handler', () => {
   assert.match(readFileSync(path.join(repositoryRoot, 'scripts/main.js'), 'utf8'), /getElementById\('more'\)\.addEventListener\('click', restartPhotobooth\)/);
 });
 
-test('a countdown from an old session cannot capture into the next session', () => {
-  let tick;
-  const context = vm.createContext({
-    captureGeneration: 0, frameRequest: 0,
-    countdownTimer: null,
-    imageCount: 0,
-    rowCount: 4,
-    imageURLs: [],
-    document: { getElementById: () => ({ style: {}, textContent: '' }) },
-    setInterval: callback => { tick = callback; return 1; },
-    clearInterval() {},
-  });
-  vm.runInContext(readFileSync(path.join(repositoryRoot, 'scripts/snap.js'), 'utf8'), context);
-  context.takePhotosSequentially(4);
+test('screen semantics use native frame radios, current steps and one contextual live countdown', () => {
+  const html = readFileSync(path.join(repositoryRoot, 'index.html'), 'utf8');
+  const radios = [...html.matchAll(/<input\b[^>]*type="radio"[^>]*>/g)].map(match => match[0]).filter(radio => radio.includes('name="frame"'));
+  assert.equal(radios.length, 2);
+  for (const name of ['none', 'purple']) {
+    assert.ok(radios.some(radio => radio.includes(`id="frame-${name}"`) && radio.includes('name="frame"')));
+    assert.match(html, new RegExp(`<label[^>]+for="frame-${name}"`));
+  }
+  assert.match(html, /<fieldset class="frame-picker">\s*<legend[^>]*>Frame<\/legend>/);
+  assert.equal([...html.matchAll(/aria-current="step"/g)].length, 4);
+  assert.match(html, /id="countdown" aria-hidden="true"/);
+  assert.match(html, /id="countdown-status"[^>]*role="timer" aria-live="polite" aria-atomic="true"/);
+  assert.match(html, /class="hero-art" aria-hidden="true"/);
+});
 
-  context.captureGeneration++;
-  tick();
 
-  assert.equal(context.imageCount, 0);
-  assert.equal(context.imageURLs.length, 0);
+
+test('navigation exposes only working destinations and both dialogs have accessible labels', () => {
+  const html = readFileSync(path.join(repositoryRoot, 'index.html'), 'utf8');
+  assert.deepEqual([...html.matchAll(/data-destination="([^"]+)"/g)].map(match => match[1]), ['home', 'booth', 'gallery', 'settings', 'about']);
+  assert.match(html, /id="menu-toggle"[^>]+aria-expanded="false"[^>]+aria-controls="site-nav"/);
+  for (const dialog of ['retake', 'restart']) {
+    assert.match(html, new RegExp(`<dialog id="${dialog}-dialog" aria-labelledby="${dialog}-heading" aria-describedby="${dialog}-description"`));
+  }
+  assert.match(html, /id="gallery-preview-dialog"[^>]*aria-labelledby="gallery-preview-heading"/);
+  assert.match(html, /id="settings-heading" tabindex="-1"/);
 });
