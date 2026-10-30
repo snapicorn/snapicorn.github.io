@@ -52,6 +52,7 @@ export const packageFiles = Object.freeze([
 ]);
 
 export const historicalExclusions = Object.freeze([
+  'assets/frames/historical/purple-legacy.png',
   'assets/fonts/VintageCharm-Regular.otf',
   'assets/logos/logo_filled.png',
   'assets/logos/snapicorn.png',

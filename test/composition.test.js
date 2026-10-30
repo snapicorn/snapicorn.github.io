@@ -2,9 +2,21 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
+import { createHash } from 'node:crypto';
 
 const compositor = vm.createContext({});
 vm.runInContext(readFileSync(new URL('../scripts/composition.js', import.meta.url), 'utf8'), compositor);
+
+test('approved Cream Moonwalk bytes and geometry are exact; original historical frame and watermark survive', () => {
+  const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+  const frame = readFileSync(new URL('../assets/frames/purple.png', import.meta.url));
+  assert.equal(hash(frame), '2ae9455c799d864a47da64b0daf949b8093d34a972e334797fc4b180e59fdcad');
+  assert.deepEqual([frame.readUInt32BE(16), frame.readUInt32BE(20), frame[24], frame[25]], [700, 2090, 8, 6]);
+  assert.equal(hash(readFileSync(new URL('../assets/frames/historical/purple-legacy.png', import.meta.url))),
+    '6b8e34b0d00bca71e0febc22f4c76e712468ddf8cbca0fecace16bea5b72e762');
+  assert.equal(hash(readFileSync(new URL('../assets/logos/logo_transparent.png', import.meta.url))),
+    '3269ed4cab6167919a04a588f5c7f76ac634a599d9876fefde7b5a19898db887');
+});
 
 // A controlled nearest-neighbor pixel sampler, not a browser Canvas or PNG encoder.
 function createCanvas() {
@@ -78,6 +90,14 @@ for (const [width, height, photoHeight, stripHeight] of [
     assert.equal(purple.sample(100, 100), '1-left');
     assert.equal(none.sample(100, 100), '1-left');
     assert.equal(canvas.sample(0, 0), 'white', 'framing never mutates the base');
+
+    const withoutLogo = compositor.composePhotoStrip(photos, null, width, height, createCanvas);
+    assert.equal(withoutLogo.width, canvas.width);
+    assert.equal(withoutLogo.height, canvas.height);
+    assert.equal(withoutLogo.layers.length, 5, 'Purple base draws only white and four photos');
+    assert.equal(withoutLogo.sample(350, stripHeight - 75), 'white');
+    assert.deepEqual(withoutLogo.layers.map(layer => layer.rect), canvas.layers.slice(0, 5).map(layer => layer.rect));
+    assert.deepEqual(withoutLogo.layers.slice(1).map(layer => layer.image), photos);
   });
 }
 

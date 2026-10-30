@@ -33,7 +33,9 @@ async function requestComposition() {
             photos.push(await loadSessionImage(photo.source, generation));
             if (!isCurrent()) return false;
         }
-        const logo = await loadSessionImage('assets/logos/logo_transparent.png', generation);
+        // Purple has its own footer artwork; omit the watermark rather than covering photos.
+        const logo = frameName === 'none'
+            ? await loadSessionImage('assets/logos/logo_transparent.png', generation) : null;
         if (!isCurrent()) return false;
         const base = composePhotoStrip(photos, logo, geometry.width, geometry.height,
             () => document.createElement('canvas'));

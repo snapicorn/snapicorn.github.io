@@ -2,6 +2,8 @@
 
 Implemented and verified on 30 October 2026 (Asia/Manila), using Node.js 24.22.0 on Windows. This package is **not yet publication-cleared**. Packaging approval permits local copies of active assets for verification; it does not establish redistribution rights or authorize deployment.
 
+For the current Cream Moonwalk asset, fifth historical exclusion and updated results, see the [31 October integration report](pro-86-cream-moonwalk.md) and the addendum below. The original implementation results remain as historical evidence.
+
 ## Generate and inspect
 
 From the repository root:
@@ -70,9 +72,13 @@ These eight direct requests reach the local server; exclusion is not inferred fr
 ## Remaining publication decisions
 
 - Supply the 12-file generated-artwork ledger: account/service and applicable agreement, authority/transfer to Snapicorn, public raw-file and finished-strip uses, and every actual reference-input chain.
-- Clear the original mandatory watermark and every Purple component, or separately authorize cleared replacements and approve changed artwork baselines. None still includes the mandatory watermark.
+- Clear the original watermark, still mandatory for None. Cream Moonwalk now replaces active Purple under local integration approval; legacy Purple is historical and excluded. Public distribution remains separately gated; see the [current integration ledger](../assets/ASSETS.md#cream-moonwalk-local-integration--31-october-2026).
 - Resolve the active white placeholder's provenance or separately authorize its independently created replacement. This task keeps it unchanged.
 - Identify public repository/history/archive copies of historical files and approve their distribution/access handling separately. Package exclusion does not remove those copies or stale assets on an existing host.
 - Complete the unchanged PRO-64 and PRO-78 hosting, hardware/device, accessibility and full-flow acceptance, then separately approve any publication and host-specific artifact replacement.
 
 PRO-86 remains unresolved. PRO-64 and PRO-78 retain their statuses, dependencies and acceptance requirements. The packaging implementation did not delete/replace source assets, rewrite Git history, push, deploy or publish. Local verification is the end of the implementation task.
+
+## Cream Moonwalk integration addendum — 31 October 2026
+
+The 30 October evidence above is historical. Current generation still uses exactly 43 allowlisted runtime files; `assets/frames/purple.png` is now the exact approved Cream Moonwalk PNG. A fifth explicit historical exclusion, `assets/frames/historical/purple-legacy.png`, retains the original Purple locally without distributing it. All `proposals/` files remain denied by default. No recursive asset copy or wildcard was introduced. Current all-resource byte comparisons and direct 404 checks at both mounts, plus exact asset hashes, are recorded in [integration verification](pro-86-cream-moonwalk.md). This local package remains **not publication-cleared**.

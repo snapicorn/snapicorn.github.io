@@ -176,6 +176,32 @@ async function captureFour(booth) {
   await settleImages();
 }
 
+test('Purple omits watermark loading and drawing; None restores it and frame switches invalidate PNG cache', async () => {
+  const booth = createBooth();
+  await captureFour(booth);
+  for (const frame of ['purple', 'none', 'purple']) {
+    const previous = booth.read('session.output');
+    await booth.context.preparePNG(previous, booth.context.exportIdentity(previous));
+    assert.ok(previous.pngBlob);
+    const loadStart = booth.loadedImages.length;
+    const drawStart = booth.draws.length;
+    await booth.context.applyFrame(frame);
+    const output = booth.read('session.output');
+    assert.notEqual(output, previous);
+    assert.equal(output.pngBlob, undefined);
+    assert.equal(booth.context.isCompositionCurrent(), true);
+    const watermarkLoaded = booth.loadedImages.slice(loadStart).some(image => image.src.includes('logo_transparent'));
+    const watermarkDrawn = booth.draws.slice(drawStart).some(draw => draw.source.includes('logo_transparent'));
+    assert.equal(watermarkLoaded, frame === 'none');
+    assert.equal(watermarkDrawn, frame === 'none');
+    await booth.element('download').onclick();
+    await booth.element('download').onclick();
+    assert.equal(booth.downloads.at(-1).href, output.dataURL);
+    assert.equal(booth.downloads.at(-2).href, output.dataURL);
+    assert.notEqual(output.pngBlob, previous.pngBlob);
+  }
+});
+
 test('capture slots announce ordered progress and reset after cancellation', async () => {
   const booth = createBooth();
   await booth.element('startButton').click();

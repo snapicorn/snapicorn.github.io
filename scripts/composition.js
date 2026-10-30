@@ -19,12 +19,14 @@ function composePhotoStrip(photos, logo, originalWidth, originalHeight, createCa
         // Captures already contain the camera mirror transform. Do not mirror or crop again.
         ctx.drawImage(photo, padding, padding + index * (photoHeight + gap), targetWidth, photoHeight);
     });
-    const logoScale = Math.min(targetWidth * 0.4 / logo.width, watermarkHeight * 0.8 / logo.height);
-    const logoWidth = logo.width * logoScale;
-    const logoHeight = logo.height * logoScale;
-    ctx.drawImage(logo, (canvas.width - logoWidth) / 2,
-        canvas.height - padding / 2 - watermarkHeight + (watermarkHeight - logoHeight) / 2,
-        logoWidth, logoHeight);
+    if (logo) {
+        const logoScale = Math.min(targetWidth * 0.4 / logo.width, watermarkHeight * 0.8 / logo.height);
+        const logoWidth = logo.width * logoScale;
+        const logoHeight = logo.height * logoScale;
+        ctx.drawImage(logo, (canvas.width - logoWidth) / 2,
+            canvas.height - padding / 2 - watermarkHeight + (watermarkHeight - logoHeight) / 2,
+            logoWidth, logoHeight);
+    }
     return canvas;
 }
 

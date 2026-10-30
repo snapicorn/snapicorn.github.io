@@ -22,7 +22,7 @@ function fixture(t) {
 
 test('package is exact, byte-identical and deterministic; source-only files never enter it', t => {
   const root = fixture(t);
-  for (const filename of [...historicalExclusions, '.git/private', 'test/qa.html', 'node_modules/private.js', 'docs/verification.md', 'assets/new-unapproved.png']) {
+  for (const filename of [...historicalExclusions, '.git/private', 'test/qa.html', 'node_modules/private.js', 'docs/verification.md', 'assets/new-unapproved.png', 'proposals/pro-86-purple-frame/b-cream-moonwalk.png']) {
     mkdirSync(path.dirname(path.join(root, filename)), { recursive: true });
     writeFileSync(path.join(root, filename), 'source-only');
   }
@@ -148,7 +148,7 @@ test('generated directory serves every reference and notice, with historical URL
         assert.equal(response.status, 200, `${mount}${filename}`);
         assert.deepEqual(Buffer.from(await response.arrayBuffer()), readFileSync(path.join(repositoryRoot, filename || 'index.html')));
       }
-      for (const filename of [...historicalExclusions, '.git/config', 'package.json', 'test/qa.html', 'docs/pro-64-verification.md']) {
+      for (const filename of [...historicalExclusions, 'proposals/pro-86-purple-frame/b-cream-moonwalk.png', '.git/config', 'package.json', 'test/qa.html', 'docs/pro-64-verification.md']) {
         assert.equal((await fetch(new URL(filename, base))).status, 404, `${mount}${filename}`);
         assert.ok(requests.includes(`${mount}${filename}`));
       }
