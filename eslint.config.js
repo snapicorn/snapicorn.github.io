@@ -54,7 +54,7 @@ export default [
     },
   },
   {
-    files: ['test/*.test.js'],
+    files: ['test/*.test.js', 'tools/*.js'],
     ...js.configs.recommended,
     languageOptions: {
       globals: globals.node,

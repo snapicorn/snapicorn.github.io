@@ -21,9 +21,9 @@ Share catches PNG encoding and native API failures, treats cancellation normally
 
 The app captures four camera photos in sequence, lets you review all four and accept individual retakes, then composes them into a vertical strip with the existing watermark, None or Purple, and optional Star, Rainbow, Unicorn and Heart pixel stickers. PNG download, native sharing and explicit Save to Gallery consume the current completed composition. Home's unicorn strip is decorative sample artwork, not captured photos. Filters, animated stickers, QR sharing, photo rearrangement, and additional layouts remain deferred.
 
-This is a static site with no build step. Its scripts, styles, fonts, and images are served from the repository's own paths. Use HTTPS for hosted camera access; `localhost` is suitable for local camera development. The project has automated mock-based tests but does not currently certify browser/device support. Physical-camera behavior, cross-browser/device coverage, native sharing, screen-reader announcements, and actual downloaded-file appearance still need manual acceptance; see the linked PRO-61/62 verification notes below.
+This is a static site with no runtime build or bundler. The local packager copies approved files without transforming them, preserving their relative paths. Use HTTPS for hosted camera access; `localhost` is suitable for local camera development. The project has automated mock-based tests but does not currently certify browser/device support. Physical-camera behavior, cross-browser/device coverage, native sharing, screen-reader announcements, and actual downloaded-file appearance still need manual acceptance; see the linked PRO-61/62 verification notes below.
 
-Design asset origins and known licensing limits are documented in [assets/ASSETS.md](assets/ASSETS.md). Font and Phosphor notices are included under `assets/licenses/`. Permission to redistribute the original watermark, purple frame, or unused VintageCharm font has not been established, so confirm their rights before publication.
+Design asset origins, replacement specifications and the [release-rights checklist](assets/ASSETS.md#release-rights-checklist-pro-86) are documented in [assets/ASSETS.md](assets/ASSETS.md). Font and Phosphor notices are included under `assets/licenses/`. The local package excludes four historical assets, but is **not yet publication-cleared**: generated-artwork authority and reference-input rights, the original watermark, Purple frame and white placeholder remain unresolved. Repository-root serving still exposes unused tracked assets, including VintageCharm. Package exclusion does not clear public repository/history/archive copies or remove stale remote files. PRO-86 does not clear the other PRO-64 or PRO-78 release requirements.
 
 ## Run locally
 
@@ -33,13 +33,21 @@ Install the development tools once:
 npm ci
 ```
 
-Start any static file server from the repository root. For example, with Python installed:
+Generate the local package (Node built-ins only; no dependency installation needed for this command):
 
 ```sh
-python -m http.server 8000
+npm run package:local
 ```
 
-Open `http://localhost:8000` in a browser, select Start Photobooth, then Enable camera to try the live photobooth. The app serves its existing HTML, scripts, styles, and assets directly; there is no build step.
+Output is fixed at `dist/local-package/`: **43 files**, comprising HTML, 16 scripts, two stylesheets, 21 active images/fonts and three complete license notices. The explicit allowlist is in [tools/static-package.js](tools/static-package.js); nothing else is copied. Source files are preserved. Repeated runs refresh only allowlisted regular files. Links, missing sources and unexpected output entries cause failure; the packager never cleans or deletes directories. If it reports an unexpected entry, inspect it and resolve it manually before rerunning. Do not use the output while generation is in progress or after a failed run.
+
+With Python installed, serve **the generated directory itself** on loopback:
+
+```sh
+python -m http.server 8000 --bind 127.0.0.1 --directory dist/local-package
+```
+
+Open `http://localhost:8000`, select Start Photobooth, then Enable camera to try the live photobooth. Stop the server with Ctrl+C. This local preview does not authorize publication. For the inventory, exclusions, root/subdirectory HTTP checks and remaining blockers, see [PRO-86 packaging verification](docs/pro-86-packaging.md).
 
 ## Checks
 
@@ -49,13 +57,15 @@ Run automated tests:
 npm test
 ```
 
-Lint the active scripts and test file:
+Lint the active scripts, packaging tool and tests:
 
 ```sh
 npm run lint
 ```
 
 Tests use Node's built-in test runner and mocked browser objects. They check script syntax/order, local HTML and CSS asset paths, camera startup/cleanup, session reset, countdown timing, cancellation, capture/composition failures, and retry. They do not replace real-browser checks of camera permissions, image rendering, downloads, or device sharing.
+
+The suite also generates the local package, checks its exact file set and source bytes, tests path/link guards with disposable fixtures, and serves only the generated directory at `/` and `/snapicorn/`. Every referenced asset and notice must return its original bytes; direct requests for all four historical paths must return HTTP 404 at both mounts. Run the focused packaging checks with `node --test test/static-package.test.js`.
 
 ## Capture recovery
 

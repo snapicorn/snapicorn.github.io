@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint \"scripts/*.js\" \"test/*.test.js\"",
+    "package:local": "node tools/static-package.js",
+    "lint": "eslint \"scripts/*.js\" \"test/*.test.js\" \"tools/*.js\"",
     "test": "node --test"
   },
   "devDependencies": {
