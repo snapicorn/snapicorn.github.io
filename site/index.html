@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapicorn</title>
+    <link rel="stylesheet" href="styles/foundation.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" href="assets/design/logo-minimal.png" type="image/png">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="brand" aria-label="Snapicorn">
+            <img src="assets/design/logo-minimal.png" alt="" class="logo" width="65" height="60">
+            <span class="brand-name">snapicorn</span>
+            <img src="assets/design/brand-sparkle.svg" alt="" class="brand-sparkle" width="18" height="18">
+        </div>
+        <button id="menu-toggle" class="text-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="site-nav">Menu</button>
+        <nav id="site-nav" aria-label="Main navigation">
+            <button class="text-button" data-destination="home" aria-current="page">Home</button>
+            <button class="text-button" data-destination="booth">Photobooth</button>
+            <button class="text-button" data-destination="gallery">Gallery</button>
+            <button class="text-button" data-destination="about">About</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home-screen" aria-labelledby="home-heading">
+            <div id="home-container">
+                <div class="home-copy">
+                    <h1 id="home-heading" tabindex="-1" aria-describedby="camera-status">Four snaps.<br><em>Pure magic.</em></h1>
+                    <p>Make a strip worth keeping.</p>
+                    <div class="home-actions">
+                        <button id="startButton"><span aria-hidden="true" class="camera-icon"></span>Start Photobooth</button>
+                    </div>
+                    <p class="privacy-note">Camera permission needed. Photos are processed in this browser for this session. Save finished PNGs to Gallery, Download or Share only when you choose.</p>
+                    <p id="camera-status" role="status" aria-live="polite" aria-atomic="true"></p>
+                </div>
+                <div class="hero-art" aria-hidden="true">
+                    <div class="home-sample" aria-hidden="true">
+                        <img src="assets/design/sprite-unicorn-1.png" alt="" class="pixel-art" width="1448" height="1086">
+                        <img src="assets/design/sprite-unicorn-2.png" alt="" class="pixel-art" width="1448" height="1086">
+                        <img src="assets/design/sprite-unicorn-3.png" alt="" class="pixel-art" width="1448" height="1086">
+                        <img src="assets/design/sprite-unicorn-4.png" alt="" class="pixel-art" width="1448" height="1086">
+                        <div class="sample-strip-footer">
+                            <img src="assets/design/logo-minimal.png" alt="" width="20" height="19">
+                            <span>snapicorn</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="booth-screen" style="display: none;" aria-labelledby="capture-heading">
+            <ol class="progress" aria-label="Photobooth progress">
+                <li class="current" aria-current="step"><span>1</span>Capture</li>
+                <li><span>2</span>Customize</li>
+                <li><span>3</span>Export</li>
+            </ol>
+            <div class="intro">
+                <h2 id="capture-heading" tabindex="-1">Strike a pose.</h2>
+                <p>4 photos · 3-second countdown</p>
+            </div>
+            <div class="camera-layout">
+                <div class="camera-panel">
+                    <div id="camera-wrapper">
+                        <video id="camera" autoplay playsinline muted aria-label="Live front-camera preview"></video>
+                        <span id="camera-label" class="camera-label">CAMERA OFF</span>
+                        <div id="camera-placeholder"><span aria-hidden="true" class="camera-icon"></span><p>Ready when you are.</p><p>Camera off</p></div>
+                        <div id="countdown" aria-hidden="true"></div>
+                        <span id="countdown-status" class="visually-hidden" role="timer" aria-live="polite" aria-atomic="true"></span>
+                        <span id="countdown-photo" aria-hidden="true" hidden></span>
+                    </div>
+                    <div class="controls">
+                        <button id="enable-camera">Enable camera</button>
+                        <button id="snap" disabled><span aria-hidden="true" class="camera-icon"></span><span id="snap-label">Take 4 photos</span></button>
+                        <button id="cancel" class="text-button">Cancel / Exit</button>
+                    </div>
+                </div>
+                <aside class="capture-summary" aria-label="Captured photos">
+                    <div class="summary-heading">
+                        <strong>Your four</strong>
+                        <span id="capture-progress" role="status" aria-live="polite" aria-atomic="true">0 captured</span>
+                    </div>
+                    <div class="preview-strip" id="preview-strip"></div>
+                </aside>
+            </div>
+            <p id="booth-camera-status" class="flow-status" role="status" aria-live="polite" aria-atomic="true"></p>
+            <canvas id="canvas"></canvas>
+        </section>
+
+        <section id="review-screen" style="display: none;" aria-labelledby="review-heading">
+            <ol class="progress" aria-label="Photobooth progress">
+                <li class="current" aria-current="step"><span>1</span>Capture</li>
+                <li><span>2</span>Customize</li>
+                <li><span>3</span>Export</li>
+            </ol>
+            <div class="intro"><h2 id="review-heading" tabindex="-1">Pick your keepers.</h2><p>Retake any photo.</p></div>
+            <div id="review-grid" class="review-grid" aria-label="Review your four photos"></div>
+            <div class="review-actions"><span>Not saved yet · Reloading clears this session</span><button id="customize">Make it yours</button></div>
+            <p id="review-status" class="flow-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </section>
+
+        <section id="edit-screen" style="display: none;" aria-labelledby="edit-heading">
+            <ol class="progress" aria-label="Photobooth progress">
+                <li class="complete"><span aria-label="Completed">✓</span>Capture</li>
+                <li class="current" aria-current="step"><span>2</span>Customize</li>
+                <li><span>3</span>Export</li>
+            </ol>
+            <div class="intro">
+                <h2 id="edit-heading" tabindex="-1">Make it yours.</h2>
+            </div>
+            <div class="editor-layout">
+                <div>
+                    <div id="edit-area" aria-label="Photo-strip preview">
+                        <div class="preview-toolbar">
+                            <div class="history-actions"><button id="undo-sticker" class="text-button" disabled>Undo</button><button id="redo-sticker" class="text-button" disabled>Redo</button></div>
+                            <label class="zoom-control">Zoom <input id="preview-zoom" type="range" min="80" max="140" value="100" step="10"><output id="preview-zoom-value" for="preview-zoom">100%</output></label>
+                        </div>
+                        <div id="preview-viewport"><div id="strip-scroll"><div id="strip-stage"><div id="strip-preview"></div><div id="sticker-layer" aria-label="Stickers on your strip"></div></div></div></div>
+                    </div>
+                    <div class="under-preview">
+                        <button id="back-to-review" class="text-button">Review photos</button>
+                        <button id="more" class="text-button">Make another strip</button>
+                    </div>
+                </div>
+                <div class="edit-controls">
+                    <div class="tool-tabs" role="tablist" aria-label="Customization tools">
+                        <button id="tool-frame" role="tab" aria-selected="true" aria-controls="frame-panel">Frame</button>
+                        <button id="tool-stickers" role="tab" aria-selected="false" aria-controls="stickers-panel" tabindex="-1">Stickers</button>
+                    </div>
+                    <div id="frame-panel" role="tabpanel" aria-labelledby="tool-frame" tabindex="0">
+                    <fieldset class="frame-picker">
+                        <legend class="visually-hidden">Frame</legend>
+                        <div class="frame-options">
+                            <input class="frameButton visually-hidden" type="radio" name="frame" id="frame-none" data-frame="none" value="none" checked>
+                            <label class="frame-option" for="frame-none"><img class="mini-strip" src="assets/design/logo-minimal.png" alt="" width="15" height="49">None<span class="frame-check" aria-hidden="true">✓</span></label>
+                            <input class="frameButton visually-hidden" type="radio" name="frame" id="frame-purple" data-frame="purple" value="purple">
+                            <label class="frame-option" for="frame-purple"><img class="mini-strip purple-tint" src="assets/design/logo-minimal.png" alt="" width="15" height="49">Purple<span class="frame-check" aria-hidden="true">✓</span></label>
+                        </div>
+                    </fieldset>
+                    </div>
+                    <div id="stickers-panel" role="tabpanel" aria-labelledby="tool-stickers" tabindex="0" hidden>
+                        <div class="sticker-tray">
+                            <button id="add-star" aria-label="Add Star sticker"><img src="assets/stickers/sticker-pixel-star.png" alt=""><span>Star</span></button>
+                            <button id="add-rainbow" aria-label="Add Rainbow sticker"><img src="assets/stickers/sticker-pixel-rainbow.png" alt=""><span>Rainbow</span></button>
+                            <button id="add-unicorn" aria-label="Add Unicorn sticker"><img src="assets/stickers/sticker-pixel-unicorn.png" alt=""><span>Unicorn</span></button>
+                            <button id="add-heart" aria-label="Add Heart sticker"><img src="assets/stickers/sticker-pixel-heart.png" alt=""><span>Heart</span></button>
+                        </div>
+                        <section id="sticker-controls" aria-label="Selected sticker controls" hidden>
+                            <div class="selected-heading"><strong id="selected-sticker-name"></strong><button id="remove-sticker" class="text-button">Remove sticker</button></div>
+                            <label class="slider-label" for="sticker-size">Size <input id="sticker-size" type="range" min="8" max="45" step="1" value="22"><output id="sticker-size-value" for="sticker-size">22%</output></label>
+                            <label class="slider-label" for="sticker-rotation">Rotation <input id="sticker-rotation" type="range" min="-180" max="180" step="1" value="0"><output id="sticker-rotation-value" for="sticker-rotation">0°</output></label>
+                            <p class="small">Arrow keys to move · Delete to remove</p>
+                        </section>
+                        <p id="sticker-empty">Choose a sticker, then drag it into place.</p>
+                    </div>
+                    <div class="export-actions">
+                        <button id="finish-strip" disabled>Finish strip <span aria-hidden="true">→</span></button>
+                    </div>
+                    <p id="edit-camera-status" role="status" aria-live="polite" aria-atomic="true"></p>
+                    <button id="retry-composition" class="secondary" hidden>Retry</button>
+                </div>
+            </div>
+        </section>
+        <section id="export-screen" style="display: none;" aria-labelledby="export-heading">
+            <ol class="progress" aria-label="Photobooth progress">
+                <li class="complete"><span aria-label="Completed">✓</span>Capture</li>
+                <li class="complete"><span aria-label="Completed">✓</span>Customize</li>
+                <li class="current" aria-current="step"><span>3</span>Export</li>
+            </ol>
+            <div class="intro"><h2 id="export-heading" tabindex="-1">It’s a keeper.</h2></div>
+            <div class="editor-layout export-layout">
+                <div>
+                    <div id="export-preview" aria-label="Finished photo-strip preview"></div>
+                    <div class="under-preview">
+                        <button id="back-to-customizing" class="text-button"><span aria-hidden="true">←</span> Back to customizing</button>
+                        <span id="export-dimensions"></span>
+                    </div>
+                </div>
+                <aside class="export-tools" aria-labelledby="export-tools-heading">
+                    <h2 id="export-tools-heading">Keep your magic.</h2>
+                    <button id="download" disabled>Download PNG</button>
+                    <button id="share" class="secondary" disabled>Share strip</button>
+                    <button id="save-gallery" class="secondary" disabled>Save to Gallery</button>
+                    <p id="gallery-save-status" role="status" aria-live="polite" aria-atomic="true"></p>
+                    <p class="privacy-note">Save only when you choose. Gallery stays in this browser profile and site origin, may be cleared or evicted, and is not backed up or synchronized. Download for a separate copy.</p>
+                    <p id="export-status" role="status" aria-live="polite" aria-atomic="true"></p>
+                    <hr>
+                    <button id="export-more" class="text-button">Make another strip</button>
+                </aside>
+            </div>
+        </section>
+        <section id="gallery-screen" class="gallery-page" style="display: none;" aria-labelledby="gallery-heading">
+            <div class="intro"><h2 id="gallery-heading" tabindex="-1">Your keepsakes.</h2></div>
+            <p class="gallery-disclosure">Saved in this browser profile and site origin. Images may be lost when site data is cleared or storage is evicted. No automatic backup or synchronization. Download PNG for a separate copy.</p>
+            <p id="gallery-status" role="status" aria-live="polite" aria-atomic="true"></p>
+            <button id="gallery-retry" class="secondary" hidden>Retry Gallery</button>
+            <div id="gallery-empty" class="gallery-empty" hidden>
+                <img src="assets/design/magic-gallery-empty.png" alt="" width="240" height="192">
+                <h3>Room for a little magic.</h3><p>Finish a strip, then save it here.</p>
+                <button id="gallery-start">Start Photobooth</button>
+            </div>
+            <div id="gallery-grid" class="gallery-grid" aria-label="Saved photo strips" aria-busy="false"></div>
+            <div id="gallery-pagination" class="gallery-pagination" hidden>
+                <button id="gallery-previous" class="secondary">Previous</button><span id="gallery-page-number"></span><button id="gallery-next" class="secondary">Next</button>
+            </div>
+        </section>
+        <section id="about-screen" class="about-content" style="display: none;" aria-labelledby="about-heading">
+            <h2 id="about-heading" tabindex="-1">A little strip of happy.</h2>
+            <p>Capture four photos, review and retake, choose a frame and pixel stickers, then download a PNG or share where supported.</p>
+            <details><summary>Privacy &amp; your photos</summary><p>Enable camera requests video, never audio. Captures and edits stay in memory for this session; reloading or leaving clears that session. Save to Gallery explicitly stores only a finished PNG in this browser profile and site origin. It may be lost when site data is cleared or storage is evicted, and is not automatically backed up or synchronized. Download requests a separate PNG copy only when you choose. Share opens your device’s sharing flow where supported; you choose its destination.</p></details>
+        </section>
+    </main>
+    <dialog id="retake-dialog" aria-labelledby="retake-heading" aria-describedby="retake-description">
+        <div class="modal-header"><h2 id="retake-heading">Retake photo</h2><button id="retake-close" class="text-button" aria-label="Close retake">✕</button></div>
+        <p id="retake-description">Your original stays until you accept. Only this photo will change.</p>
+        <div class="retake-compare">
+            <div><span>Original</span><img id="retake-original" alt="Original photo"></div>
+            <div><span>Replacement preview</span><div id="retake-camera-host"></div><img id="retake-candidate" alt="Replacement photo" hidden></div>
+        </div>
+        <p id="retake-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div class="modal-actions">
+            <button id="retake-cancel" class="secondary">Cancel</button>
+            <button id="retake-enable">Enable camera</button>
+            <button id="take-replacement" hidden disabled>Take replacement</button>
+            <button id="accept-replacement" hidden disabled>Use replacement</button>
+        </div>
+    </dialog>
+    <dialog id="restart-dialog" aria-labelledby="restart-heading" aria-describedby="restart-description">
+        <div class="modal-header"><h2 id="restart-heading">A fresh set of moments?</h2><button id="restart-close" class="text-button" aria-label="Close restart confirmation">✕</button></div>
+        <p id="restart-description">Your current strip stays here if you cancel. Download it before starting a new session.</p>
+        <div class="modal-actions"><button id="keep-strip" class="secondary" autofocus>Keep this strip</button><button id="new-strip">Start new strip</button></div>
+    </dialog>
+    <dialog id="gallery-preview-dialog" class="gallery-modal" aria-labelledby="gallery-preview-heading">
+        <div class="modal-header"><h2 id="gallery-preview-heading">A little strip of happy.</h2><button id="gallery-preview-close" class="text-button" aria-label="Close saved image">✕</button></div>
+        <img id="gallery-preview-image" class="gallery-detail" alt="Full saved four-photo strip" hidden>
+        <p id="gallery-preview-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div class="modal-actions"><button id="gallery-download" disabled>Download PNG</button><button id="gallery-share" class="secondary" disabled>Share strip</button></div>
+        <button id="gallery-delete" class="text-button gallery-delete" disabled>Delete from Gallery</button>
+        <div id="gallery-delete-confirmation" class="gallery-delete-confirmation" hidden>
+            <p>Delete this finished image from this browser’s Gallery? Downloaded copies are unaffected.</p>
+            <div class="modal-actions"><button id="gallery-keep" class="secondary">Keep it</button><button id="gallery-confirm-delete" class="danger">Delete this strip</button></div>
+        </div>
+    </dialog>
+    <footer class="site-footer"><p>Snap. Smile. Sparkle.</p></footer>
+
+    <script src="scripts/sticker-geometry.js"></script>
+    <script src="scripts/sticker-history.js"></script>
+    <script src="scripts/sticker-gestures.js"></script>
+    <script src="scripts/variables.js"></script>
+    <script src="scripts/camera.js"></script>
+    <script src="scripts/snap.js"></script>
+    <script src="scripts/composition.js"></script>
+    <script src="scripts/preview.js"></script>
+    <script src="scripts/composition-coordinator.js"></script>
+    <script src="scripts/edit.js"></script>
+    <script src="scripts/sticker-editor.js"></script>
+    <script src="scripts/export.js"></script>
+    <script src="scripts/gallery-store.js"></script>
+    <script src="scripts/gallery.js"></script>
+    <script src="scripts/motion.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+
+</html>
