@@ -35,6 +35,10 @@ async function requestComposition() {
         }
         const logo = await loadSessionImage('assets/design/logo-minimal.png', generation);
         if (!isCurrent()) return false;
+        if (frameName === 'none') {
+            await document.fonts.load(noneFooterFont);
+            if (!isCurrent()) return false;
+        }
         const createCanvas = () => document.createElement('canvas');
         // Purple branding goes above the paper; the white base only draws it for None.
         const base = composePhotoStrip(photos, frameName === 'none' ? logo : null,

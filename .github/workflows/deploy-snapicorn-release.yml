@@ -22,7 +22,7 @@ jobs:
       - name: Verify release files and notices
         shell: bash
         run: |
-          printf '%s  SHA256SUMS\n' f4c187777e9f0ee77f675ec94750b5199d9415a6e12dfd5105f7844a56611363 | sha256sum --check --strict
+          printf '%s  SHA256SUMS\n' 2329944b9727f2af1d13d1f781109ad884bc14e868b5d9071ab7dc541ad10977 | sha256sum --check --strict
           test "$(wc -l < SHA256SUMS)" -eq 42
           test -d site && test ! -L site
           test -z "$(find site \( ! -type f ! -type d -o -type f -links +1 \) -print)"
