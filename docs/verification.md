@@ -10,6 +10,8 @@ The workflow has read-only repository permissions and does not publish a package
 
 The Node tests cover camera/session cancellation and recovery, capture order, retake/restart, composition, sticker geometry and history, PNG preparation, sharing fallbacks, Gallery persistence, reduced motion, and static packaging. Camera, device sharing and storage failures use controlled doubles; they do not establish physical-device acceptance. Packaging tests use disposable fixtures and loopback-only servers.
 
+The approved Purple SVG is checked by its exact byte hash. The root `.gitattributes` pins that file to LF line endings so Windows checkouts preserve the approved bytes; do not update its expected hash to accommodate line-ending conversion.
+
 For actual Chromium Canvas/PNG checks, run `node tools/verify-frame-pixels.js`. The verifier uses synthetic photos and a fresh temporary browser profile, checks the current [PNG/RGBA baselines](../test/fixtures/pastel-purple/baselines.json), untouched photo regions and preview/download equality. It needs local Chrome; override its path with `FRAME_TEST_BROWSER`. It does not use personal Gallery data or invoke a device share sheet. `FRAME_APPROVAL_DIR` optionally supplies the approved sample photos and review PNGs for additional comparisons. Do not rewrite baselines merely to make a failure pass.
 
 ## Retained acceptance evidence

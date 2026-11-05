@@ -1,0 +1,2 @@
+# Keep the approved SVG's byte hash stable on Windows checkouts.
+/assets/frames/purple.svg text eol=lf
