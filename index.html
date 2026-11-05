@@ -35,7 +35,7 @@
                     <div class="home-actions">
                         <button id="startButton"><span aria-hidden="true" class="camera-icon"></span>Start Photobooth</button>
                     </div>
-                    <p class="privacy-note">Camera permission needed. Photos are processed in this browser for this session. Save finished PNGs to Gallery, Download or Share only when you choose.</p>
+                    <p class="privacy-note">Camera permission needed. Photos stay in your browser. You choose what to save or share.</p>
                     <p id="camera-status" role="status" aria-live="polite" aria-atomic="true"></p>
                 </div>
                 <div class="hero-art" aria-hidden="true">
@@ -186,7 +186,7 @@
                     <button id="share" class="secondary" disabled>Share strip</button>
                     <button id="save-gallery" class="secondary" disabled>Save to Gallery</button>
                     <p id="gallery-save-status" role="status" aria-live="polite" aria-atomic="true"></p>
-                    <p class="privacy-note">Save only when you choose. Gallery stays in this browser profile and site origin, may be cleared or evicted, and is not backed up or synchronized. Download for a separate copy.</p>
+                    <p class="privacy-note">Gallery saves stay in this browser. Download a copy to keep.</p>
                     <p id="export-status" role="status" aria-live="polite" aria-atomic="true"></p>
                     <hr>
                     <button id="export-more" class="text-button">Make another strip</button>
@@ -195,7 +195,7 @@
         </section>
         <section id="gallery-screen" class="gallery-page" style="display: none;" aria-labelledby="gallery-heading">
             <div class="intro"><h2 id="gallery-heading" tabindex="-1">Your keepsakes.</h2></div>
-            <p class="gallery-disclosure">Saved in this browser profile and site origin. Images may be lost when site data is cleared or storage is evicted. No automatic backup or synchronization. Download PNG for a separate copy.</p>
+            <p class="gallery-disclosure">Saved only in this browser, with no automatic backup. Browser cleanup can delete strips. Download a copy to keep.</p>
             <p id="gallery-status" role="status" aria-live="polite" aria-atomic="true"></p>
             <button id="gallery-retry" class="secondary" hidden>Retry Gallery</button>
             <div id="gallery-empty" class="gallery-empty" hidden>
@@ -211,7 +211,7 @@
         <section id="about-screen" class="about-content" style="display: none;" aria-labelledby="about-heading">
             <h2 id="about-heading" tabindex="-1">A little strip of happy.</h2>
             <p>Capture four photos, review and retake, choose a frame and pixel stickers, then download a PNG or share where supported.</p>
-            <details><summary>Privacy &amp; your photos</summary><p>Enable camera requests video, never audio. Captures and edits stay in memory for this session; reloading or leaving clears that session. Save to Gallery explicitly stores only a finished PNG in this browser profile and site origin. It may be lost when site data is cleared or storage is evicted, and is not automatically backed up or synchronized. Download requests a separate PNG copy only when you choose. Share opens your device’s sharing flow where supported; you choose its destination.</p></details>
+            <details><summary>Privacy &amp; your photos</summary><p>The camera uses video only, never audio. Photos and edits stay in memory until you reload, close the page, or start a new strip. Save to Gallery keeps a finished PNG in this browser profile, on this website. Saved strips do not sync to other browsers or devices, and browser cleanup can delete them. Download a separate copy to keep. Share opens your device’s sharing options; you choose where to send the image.</p></details>
         </section>
     </main>
     <dialog id="retake-dialog" aria-labelledby="retake-heading" aria-describedby="retake-description">

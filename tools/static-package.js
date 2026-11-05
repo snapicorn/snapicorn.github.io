@@ -1,8 +1,10 @@
-import { constants, copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, realpathSync } from 'node:fs';
+import { constants, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const outputRelativePath = 'dist/local-package';
+export const manifestRelativePath = 'dist/SHA256SUMS';
 
 // Deliberately enumerate files: adding a source file never adds it to the package.
 export const packageFiles = Object.freeze([
@@ -50,6 +52,7 @@ export const packageFiles = Object.freeze([
   'assets/licenses/phosphor-MIT.txt',
 ]);
 
+// Keep checking these URLs even though the obsolete source files are removed.
 export const historicalExclusions = Object.freeze([
   'assets/frames/historical/purple-legacy.png',
   'assets/fonts/VintageCharm-Regular.otf',
@@ -126,6 +129,11 @@ export function buildPackage(repositoryRoot) {
   }
   // Preflight the entire destination before writing. Never clean or recursively delete.
   inspectPath(root, outputRelativePath, { missing: true });
+  inspectPath(root, manifestRelativePath, { missing: true });
+  const manifestPath = path.join(root, manifestRelativePath);
+  if (existsSync(manifestPath) && !lstatSync(manifestPath).isFile()) {
+    throw new Error(`Expected manifest file: ${manifestPath}`);
+  }
   if (existsSync(output)) listPackageFiles(output);
   for (const filename of packageFiles) {
     inspectPath(root, `${outputRelativePath}/${filename}`, { missing: true });
@@ -134,6 +142,11 @@ export function buildPackage(repositoryRoot) {
     // No deletion: refresh only validated regular files at allowlisted destinations.
     copyFileSync(path.join(root, filename), target, existsSync(target) ? 0 : constants.COPYFILE_EXCL);
   }
+  const manifest = [...packageFiles].sort().map(filename => {
+    const hash = createHash('sha256').update(readFileSync(path.join(output, filename))).digest('hex');
+    return `${hash}  ${filename}\n`;
+  }).join('');
+  writeFileSync(manifestPath, manifest, { flag: existsSync(manifestPath) ? 'w' : 'wx' });
   return output;
 }
 
@@ -142,7 +155,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     if (process.argv.length !== 2) throw new Error('No arguments accepted; output is fixed at dist/local-package.');
     const output = buildPackage(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'));
     console.log(`Local package: ${output} (${packageFiles.length} files; ${historicalExclusions.length} historical exclusions).`);
-    console.log('See docs/pro-86-packaging.md for release verification and deployment scope.');
+    console.log(`Release manifest: ${manifestRelativePath}`);
+    console.log('See docs/packaging.md for release verification and deployment scope.');
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

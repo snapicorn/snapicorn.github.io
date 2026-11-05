@@ -6,7 +6,8 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
-import { buildPackage, historicalExclusions, listPackageFiles, outputRelativePath, packageFiles, validateRelativePath } from '../tools/static-package.js';
+import { createHash } from 'node:crypto';
+import { buildPackage, historicalExclusions, listPackageFiles, manifestRelativePath, outputRelativePath, packageFiles, validateRelativePath } from '../tools/static-package.js';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -22,7 +23,7 @@ function fixture(t) {
 
 test('package is exact, byte-identical and deterministic; source-only files never enter it', t => {
   const root = fixture(t);
-  for (const filename of [...historicalExclusions, '.git/private', 'test/qa.html', 'node_modules/private.js', 'docs/verification.md', 'assets/new-unapproved.png', 'proposals/pro-86-purple-frame/b-cream-moonwalk.png']) {
+  for (const filename of [...historicalExclusions, '.git/private', 'test/qa.html', 'node_modules/private.js', 'docs/verification.md', 'assets/new-unapproved.png', 'proposals/frame-review/b-cream-moonwalk.png']) {
     mkdirSync(path.dirname(path.join(root, filename)), { recursive: true });
     writeFileSync(path.join(root, filename), 'source-only');
   }
@@ -31,7 +32,15 @@ test('package is exact, byte-identical and deterministic; source-only files neve
   const output = buildPackage(root);
   assert.deepEqual(listPackageFiles(output), [...packageFiles].sort());
   const first = packageFiles.map(filename => readFileSync(path.join(output, filename)));
+  const manifestPath = path.join(root, manifestRelativePath);
+  const manifest = readFileSync(manifestPath, 'utf8');
+  const entries = manifest.trimEnd().split('\n').map(line => line.split('  '));
+  assert.deepEqual(entries.map(([, filename]) => filename), [...packageFiles].sort());
+  for (const [hash, filename] of entries) {
+    assert.equal(hash, createHash('sha256').update(readFileSync(path.join(output, filename))).digest('hex'));
+  }
   buildPackage(root);
+  assert.equal(readFileSync(manifestPath, 'utf8'), manifest);
   packageFiles.forEach((filename, index) => {
     assert.deepEqual(readFileSync(path.join(output, filename)), first[index]);
     assert.deepEqual(first[index], readFileSync(path.join(root, filename)));
@@ -69,8 +78,15 @@ test('missing sources fail before destination writes', t => {
   assert.equal(existsSync(path.join(root, 'dist')), false);
 });
 
+test('a directory at the manifest path stops generation before package writes', t => {
+  const root = fixture(t);
+  mkdirSync(path.join(root, manifestRelativePath), { recursive: true });
+  assert.throws(() => buildPackage(root), /Expected manifest file/);
+  assert.equal(existsSync(path.join(root, outputRelativePath)), false);
+});
+
 test('source junctions and destination parent/output/nested junctions cannot escape', t => {
-  for (const location of ['assets', 'dist', outputRelativePath, `${outputRelativePath}/assets`]) {
+  for (const location of ['assets', 'dist', outputRelativePath, `${outputRelativePath}/assets`, manifestRelativePath]) {
     const root = fixture(t);
     const outside = mkdtempSync(path.join(os.tmpdir(), 'snapicorn-outside-'));
     t.after(() => rmSync(outside, { recursive: true, force: true }));
@@ -85,11 +101,11 @@ test('source junctions and destination parent/output/nested junctions cannot esc
   }
 });
 
-test('hard-linked source and output files are rejected without changing their other names', t => {
-  for (const destination of [false, true]) {
+test('hard-linked source, output and manifest files are rejected without changing their other names', t => {
+  for (const location of ['source', 'output', 'manifest']) {
     const root = fixture(t);
-    const output = destination ? buildPackage(root) : root;
-    const target = path.join(output, 'index.html');
+    const output = location === 'source' ? root : buildPackage(root);
+    const target = location === 'manifest' ? path.join(root, manifestRelativePath) : path.join(output, 'index.html');
     const alias = path.join(root, 'alias.html');
     const before = readFileSync(target);
     linkSync(target, alias);
@@ -151,9 +167,11 @@ test('generated directory serves every reference and notice, with source-only UR
       for (const filename of [
         ...historicalExclusions,
         'assets/frames/purple.svg',
-        'proposals/pro-86-purple-frame/b-cream-moonwalk.png',
-        'proposals/pro-86-purple-frame/pastel-purple/purple.png',
-        '.git/config', 'package.json', 'test/qa.html', 'docs/pro-64-verification.md',
+        'proposals/frame-review/b-cream-moonwalk.png',
+        'proposals/frame-review/pastel-purple/purple.png',
+        'SHA256SUMS',
+        'docs/verification.md',
+        '.git/config', 'package.json', 'test/qa.html', 'docs/private-review.md',
       ]) {
         assert.equal((await fetch(new URL(filename, base))).status, 404, `${mount}${filename}`);
         assert.ok(requests.includes(`${mount}${filename}`));

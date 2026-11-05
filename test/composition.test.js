@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 const compositor = vm.createContext({});
 vm.runInContext(readFileSync(new URL('../scripts/composition.js', import.meta.url), 'utf8'), compositor);
 
-test('approved Pastel Purple assets and geometry are exact; original historical frame and watermark survive', () => {
+test('approved Pastel Purple assets and geometry are exact', () => {
   const hash = bytes => createHash('sha256').update(bytes).digest('hex');
   const frame = readFileSync(new URL('../assets/frames/purple.png', import.meta.url));
   assert.equal(hash(frame), 'd16f06fac83b087205d35eed3c1e8b79f88ab4e530b6b578b08db14df5ef0a9f');
@@ -16,10 +16,6 @@ test('approved Pastel Purple assets and geometry are exact; original historical 
     '8f22697d675132666dd5bc8e40c95e6fb8b01099a01f33d2c839e61a4e885c63');
   assert.equal(hash(readFileSync(new URL('../assets/design/logo-minimal.png', import.meta.url))),
     '91fe06e8fe83b9e989663585cb5a334faeac69fa12874605b9b422b323b53c57');
-  assert.equal(hash(readFileSync(new URL('../assets/frames/historical/purple-legacy.png', import.meta.url))),
-    '6b8e34b0d00bca71e0febc22f4c76e712468ddf8cbca0fecace16bea5b72e762');
-  assert.equal(hash(readFileSync(new URL('../assets/logos/logo_transparent.png', import.meta.url))),
-    '3269ed4cab6167919a04a588f5c7f76ac634a599d9876fefde7b5a19898db887');
 });
 
 // A controlled nearest-neighbor pixel sampler, not a browser Canvas or PNG encoder.

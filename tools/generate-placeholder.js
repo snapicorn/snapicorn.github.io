@@ -52,4 +52,4 @@ const output = Buffer.concat([
 ]);
 
 if (!rgba.equals(Buffer.from([255, 255, 255, 255]))) throw new Error('Unexpected pixel definition');
-writeFileSync(new URL('./placeholder-white-independent.png', import.meta.url), output);
+writeFileSync(new URL('../assets/imgs/placeholder-white.png', import.meta.url), output);

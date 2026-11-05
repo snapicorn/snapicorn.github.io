@@ -1,2 +1,0 @@
-# Disposable renderer embeds local legacy comparison bytes; never publish it.
-render.local.html

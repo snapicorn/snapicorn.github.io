@@ -72,7 +72,7 @@ const Gallery = (() => {
         element('save-gallery').disabled = !!state.save || !!saved || operations.busy || !isCompositionCurrent();
         element('save-gallery').textContent = state.save && currentSave(state.save) ? 'Saving…'
             : saved ? 'Saved to Gallery' : 'Save to Gallery';
-        element('gallery-save-status').textContent = saved ? 'Saved in this browser’s Gallery. Download for a separate copy.'
+        element('gallery-save-status').textContent = saved ? 'Saved to Gallery.'
             : state.save && currentSave(state.save) ? 'Saving your finished PNG…'
                 : saveErrors.get(session.output) || '';
     }

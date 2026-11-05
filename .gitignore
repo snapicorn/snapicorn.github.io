@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+# Disposable design alternatives, comparison renders and review results
+/proposals/
 *.local
 
 # Editor directories and files
