@@ -2,6 +2,9 @@
   "name": "snapicorn",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
   "scripts": {
     "package:local": "node tools/static-package.js",
     "lint": "eslint \"scripts/*.js\" \"test/*.test.js\" \"tools/*.js\"",

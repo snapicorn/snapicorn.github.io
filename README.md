@@ -28,3 +28,7 @@ npm ci
 npm test
 npm run lint
 ```
+
+[Source CI](.github/workflows/ci.yml) runs these checks and builds the local package for pull requests targeting `main` and pushes to `main`. It tests Node.js 20.19.0, 22.13.0, and 24.x on Linux, plus 24.x on Windows. Package integrity tests check the file allowlist, exact bytes, hashes, unsafe paths, and root/subpath serving.
+
+See [verification coverage](docs/verification.md) for browser pixel checks and remaining device acceptance. Source CI does not deploy; production publication uses the separate manual release workflow.

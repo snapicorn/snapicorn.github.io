@@ -4,6 +4,10 @@
 
 Run `npm test` and `npm run lint` from the repository root after installing development dependencies with `npm ci`.
 
+[Source CI](../.github/workflows/ci.yml) runs `npm ci`, lint, the full Node test suite (including package integrity), and `npm run package:local` on pull requests targeting `main` and pushes to `main`. Its matrix checks the minimum supported 20.x and 22.x versions (20.19.0 and 22.13.0) and 24.x on Linux, plus 24.x on Windows. The supported range is declared in `package.json`; versions beyond 24.x are permitted but are not covered by this matrix.
+
+The workflow has read-only repository permissions and does not publish a package or deploy the site. A successful run reports checks; requiring them before merge must be configured separately in the repository's branch rules. Browser pixel verification remains a separate local check, and full browser/device acceptance remains below.
+
 The Node tests cover camera/session cancellation and recovery, capture order, retake/restart, composition, sticker geometry and history, PNG preparation, sharing fallbacks, Gallery persistence, reduced motion, and static packaging. Camera, device sharing and storage failures use controlled doubles; they do not establish physical-device acceptance. Packaging tests use disposable fixtures and loopback-only servers.
 
 For actual Chromium Canvas/PNG checks, run `node tools/verify-frame-pixels.js`. The verifier uses synthetic photos and a fresh temporary browser profile, checks the current [PNG/RGBA baselines](../test/fixtures/pastel-purple/baselines.json), untouched photo regions and preview/download equality. It needs local Chrome; override its path with `FRAME_TEST_BROWSER`. It does not use personal Gallery data or invoke a device share sheet. `FRAME_APPROVAL_DIR` optionally supplies the approved sample photos and review PNGs for additional comparisons. Do not rewrite baselines merely to make a failure pass.
