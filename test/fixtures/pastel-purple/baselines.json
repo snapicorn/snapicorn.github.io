@@ -1,0 +1,38 @@
+{
+  "none-4x3": {
+    "width": 700,
+    "height": 2090,
+    "pngSha256": "02a5eec14f7680373d53fcda232ddf7dec03a8bda6e2dec41e5850d64995fed8",
+    "rgbaSha256": "f13cd0f49183da78bfd1328679980c165dad9157ac15132de21d73e839dfb9d3"
+  },
+  "purple-4x3": {
+    "width": 700,
+    "height": 2090,
+    "pngSha256": "7189dedc42176fe3104d973ed6daf8787b1565d813caee046055fbcec173c37c",
+    "rgbaSha256": "d16f248dd24ccfbf453bfaf5ad2d1f51d316a1a5b9d1437329345323b55d18b2"
+  },
+  "none-16x9": {
+    "width": 700,
+    "height": 1642,
+    "pngSha256": "62410a007e5b500e9d3c30b0cae043978b2ef2338bccd72fd153df37184217bd",
+    "rgbaSha256": "8cbf953ef71b1231921cf7b671c2fa0403424e2a005e6f23a1d93afa24082c9d"
+  },
+  "purple-16x9": {
+    "width": 700,
+    "height": 1642,
+    "pngSha256": "4dfde14f8674e87fb6cf2d00ea4d60bf12494a52d20cbc72896daa1d85286ba7",
+    "rgbaSha256": "de22e1bcc40ce9f219765c657fbcc85ff72931333ddefca323976a5cfec760f5"
+  },
+  "none-3x4": {
+    "width": 700,
+    "height": 3490,
+    "pngSha256": "4af11545224021c1f8005c94742956b543e9aae0c404377876c0d508c3a2f54f",
+    "rgbaSha256": "de98e27dfd8b51083d72c26eeb43c0f2640ef407a95386b94be3a3978be39ad2"
+  },
+  "purple-3x4": {
+    "width": 700,
+    "height": 3490,
+    "pngSha256": "6575dcea23ed16daf552c63db28e8814fb7ae5d9d7fe8398b8a1157a91b12a5f",
+    "rgbaSha256": "c546d98f63ec9528863a00c2c17ca4ffef2abca1aacaf0d2ed862739abbbc316"
+  }
+}

@@ -75,6 +75,7 @@ summary { cursor: pointer; }
   gap: 28px;
   margin: 36px auto;
 }
+.gallery-grid:empty { margin: 0; }
 .gallery-card {
   display: flex;
   flex-direction: column;
@@ -91,7 +92,7 @@ summary { cursor: pointer; }
   background: #e8d9f9;
 }
 .gallery-card img {
-  height: 310px;
+  height: min(310px, 54svh);
   width: 100%;
   object-fit: contain;
 }
@@ -167,7 +168,7 @@ button.danger {
     padding: 12px 8px;
   }
   .gallery-card img {
-    height: 240px;
+    height: min(240px, 54svh);
   }
   .gallery-empty {
     padding: 30px 0;
@@ -188,6 +189,8 @@ button.danger {
   .retake-compare #camera-placeholder { gap: 4px; }
   .retake-compare #camera-placeholder p { font-size: 11px; }
   .retake-compare .camera-label { display: none; }
+  .retake-compare #countdown { font-size: 3rem; }
+  .retake-compare #countdown-photo { top: auto; bottom: 4px; }
   .flow-status { width: calc(100% - 40px); }
 }
 
@@ -588,7 +591,7 @@ button.text-button:active:not(:disabled) {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 656px;
+  height: clamp(260px, 70svh, 656px);
   padding: 26px 20px;
   border-radius: 22px;
   background: var(--lavender) url("../assets/design/magic-editor-backdrop.png") center / cover no-repeat;
@@ -641,6 +644,7 @@ button.text-button:active:not(:disabled) {
   display: flex;
   padding: 8px;
 }
+#strip-scroll:focus-visible { outline-offset: -3px; }
 #strip-stage {
   --strip-ratio: 0.3349;
   --zoom: 1;
@@ -760,11 +764,13 @@ button[role="tab"]:hover:not(:disabled):not([aria-disabled="true"]),
 .sticker-tray img {
   width: 54px;
   height: 54px;
+  max-width: 100%;
   object-fit: contain;
   image-rendering: pixelated;
 }
 .sticker-tray span {
   font-size: 13px;
+  overflow-wrap: anywhere;
 }
 #sticker-controls {
   margin-top: 36px;
@@ -853,7 +859,7 @@ input[type="range"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 656px;
+  height: clamp(260px, 70svh, 656px);
   padding: 26px 20px;
   border-radius: 22px;
   background: var(--lavender) url("../assets/design/magic-editor-backdrop.png") center / cover no-repeat;
@@ -1068,8 +1074,8 @@ input[type="range"] {
     align-items: stretch;
     width: auto;
     min-height: 0;
-    margin: 28px 20px 24px;
-    gap: 32px;
+    margin: 20px 20px 24px;
+    gap: 20px;
   }
   .home-copy h1 {
     margin-bottom: 18px;
@@ -1090,11 +1096,11 @@ input[type="range"] {
   .home-copy .privacy-note { font-size: 0.857rem; }
   .hero-art {
     width: 100%;
-    max-width: 400px;
-    height: 460px;
+    max-width: 340px;
+    height: clamp(270px, 48svh, 360px);
     margin: auto;
   }
-  .home-sample { width: 138px; }
+  .home-sample { width: clamp(80px, calc((48svh - 34px) / 3), 108px); }
   .progress {
     margin: 8px 20px 24px;
     gap: 20px;
@@ -1142,10 +1148,11 @@ input[type="range"] {
     gap: 26px;
   }
   #edit-area {
-    height: 570px;
-    padding: 30px 14px;
+    height: clamp(260px, 53svh, 460px);
+    padding: 12px 14px;
     border-radius: 20px;
   }
+  .preview-toolbar .text-button { min-height: 44px; }
   #strip-stage { width: calc(min(166px, 100cqw - 16px, (100cqh - 16px) * var(--strip-ratio)) * var(--zoom)); }
   .tool-heading { margin-bottom: 25px; }
   .export-actions { margin-top: 30px; }
@@ -1153,29 +1160,104 @@ input[type="range"] {
     min-height: 54px;
     font-size: 1rem;
   }
-  #export-preview { height: 570px; padding: 12px 14px; border-radius: 20px; }
+  #export-preview { height: clamp(260px, 53svh, 460px); padding: 12px 14px; border-radius: 20px; }
   #export-preview img { max-width: min(166px, 100%); }
   .export-tools { padding-top: 0; }
 }
 
-.settings-page { max-width: 680px; width: calc(100% - 40px); margin: 25px auto 70px; }
-.preference-section { padding: 26px 28px; border: 1px solid var(--line); border-radius: var(--radius-card); margin-top: 20px; background: #fffdf9; }
-.preference-section h3 { font-family: var(--serif); font-weight: 600; font-size: 26px; margin-bottom: 12px; }
-.preference-section p { margin-bottom: 18px; }
-.preference-options { display: flex; flex-wrap: wrap; gap: 12px; border: 0; padding: 0; margin: 0; min-width: 0; }
-.preference-options label { display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 8px 14px; background: #f4edfc; border-radius: 12px; cursor: pointer; }
-.preference-options input { accent-color: var(--purple); flex-shrink: 0; }
-.settings-gallery { display: inline-flex; align-items: center; min-height: var(--control-height); padding: 15px 23px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--white); color: var(--ink); font-weight: 600; }
-#motion-storage-status:empty { display: none; }
-@media (max-width: 700px) {
-  .preference-section { padding: 22px 20px; }
-}
-
-/* Five destinations must fit beside the wordmark before the mobile disclosure. */
+/* Four destinations must fit beside the wordmark before the mobile disclosure. */
 @media (min-width: 701px) and (max-width: 1000px) {
   .site-header { gap: 12px; }
   .brand { flex-shrink: 0; }
   .brand-name { font-size: 30px; white-space: nowrap; }
   .brand .logo { width: 42px; height: 42px; }
   #site-nav { gap: 12px; }
+}
+
+@media (min-width: 701px) and (min-height: 600px) {
+  body {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  .site-header { min-height: clamp(68px, 10dvh, 105px); }
+  .site-footer { padding-block: clamp(8px, 1.5dvh, 16px); }
+
+  /* Size previews from the room left by the header and footer. Main also
+     keeps enlarged text and unexpected status messages reachable. */
+  main {
+    min-width: 0;
+    min-height: 0;
+    container-type: size;
+    overflow: auto;
+  }
+
+  #home-container {
+    min-height: 0;
+    margin: 0 auto;
+    padding-block: 14px;
+  }
+  .home-copy { padding-top: 0; }
+  .home-copy h1 { font-size: clamp(3.714rem, min(7vw, 13cqh), 7.143rem); }
+  .home-actions { margin-block: clamp(16px, 4cqh, 36px) 16px; }
+  .hero-art { height: min(738px, calc(100cqh - 44px)); }
+  .home-sample { width: clamp(104px, calc((100cqh - 70px) / 3), 212px); }
+
+  .progress { margin-bottom: clamp(8px, 2cqh, 20px); }
+  .intro,
+  #edit-screen > .intro { margin: 0 20px clamp(12px, 3cqh, 24px); }
+  .intro h2,
+  #edit-heading { font-size: clamp(2.25rem, 8cqh, 3.429rem); }
+
+  .camera-layout {
+    justify-content: center;
+    /* Leave room for progress, camera actions and permission feedback. */
+    grid-template-columns: minmax(0, min(690px, calc((100cqh - 296px) * 4 / 3))) minmax(0, 260px);
+    margin-bottom: 12px;
+  }
+  .controls { gap: 10px; margin-top: 12px; }
+  .flow-status:not(:empty) {
+    width: calc(100% - 72px);
+    margin-block: 8px 12px;
+    padding-block: 8px;
+  }
+
+  .review-grid { margin-block: 0 12px; gap: 12px; }
+  .review-photo > img { height: clamp(88px, calc((100cqh - 390px) / 2), 230px); }
+  .review-photo > div { padding-block: 7px; }
+  .review-actions { margin-bottom: 12px; }
+
+  .editor-layout {
+    grid-template-rows: minmax(0, 1fr);
+    height: clamp(280px, calc(100cqh - 140px), 720px);
+    margin-bottom: 12px;
+  }
+  .editor-layout > div:first-child { display: flex; flex-direction: column; }
+  #edit-area,
+  #export-preview { flex: 1; min-height: 0; height: auto; padding-block: clamp(12px, 3cqh, 26px); }
+  .under-preview { margin-top: 8px; }
+  .edit-controls {
+    overflow: auto;
+    overscroll-behavior-y: contain;
+    padding: 8px 8px 12px;
+  }
+  .tool-tabs { margin-bottom: clamp(12px, 4cqh, 36px); }
+  .export-actions { margin-top: clamp(16px, 5cqh, 48px); }
+  .export-tools { padding-top: clamp(0px, calc(6cqh - 28px), 40px); }
+  .export-tools h2 { margin-bottom: clamp(8px, 2cqh, 26px); }
+  .export-tools > button { margin-bottom: clamp(6px, 1cqh, 12px); }
+  .export-tools hr { margin-block: clamp(8px, 2cqh, 24px) 4px; }
+
+  .gallery-page { margin-block: 12px 24px; }
+  .gallery-empty { padding-block: clamp(8px, 2cqh, 32px); }
+  .gallery-empty > img { height: min(192px, 26cqh); width: auto; }
+}
+
+@media (min-width: 701px) and (600px <= height < 760px) {
+  .review-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .review-photo > img { height: clamp(108px, 29cqh, 190px); }
+  .review-photo > div { justify-content: center; padding-inline: 8px; }
 }

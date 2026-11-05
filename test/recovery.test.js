@@ -84,6 +84,7 @@ function createBooth(storage) {
   const frameThumbnails = [new Element(), new Element()];
   const context = vm.createContext({
     document: {
+      fonts: { load: async () => [] },
       body: element('body'),
       documentElement: element('html'),
       getElementById: element,
@@ -102,8 +103,9 @@ function createBooth(storage) {
         canvas.getContext = () => faults.context || (faults.compositionContext && canvasNumber === 5) ? null : {
           save() { transforms.push(['save']); }, restore() { transforms.push(['restore']); },
           translate(...args) { transforms.push(['translate', ...args]); },
-          scale(...args) { transforms.push(['scale', ...args]); }, fillRect() {},
+          scale(...args) { transforms.push(['scale', ...args]); }, fillRect() {}, clearRect() {}, fill() {},
           rotate(...args) { transforms.push(['rotate', ...args]); },
+          measureText: () => ({ width: 210 }), fillText() {},
           drawImage(image, ...coordinates) {
             if (faults.draw) throw new Error('draw failure');
             draws.push({ source: image.src || 'camera', coordinates });
@@ -126,6 +128,7 @@ function createBooth(storage) {
       },
     },
     Image: MockImage,
+    Path2D: class {},
     URL: {
       createObjectURL(blob) { const url = `blob:mock-${++urlSerial}`; objectURLs.set(url, blob); return url; },
       revokeObjectURL(url) { revokedURLs.push(url); objectURLs.delete(url); },
@@ -151,7 +154,7 @@ function createBooth(storage) {
     setTimeout: callback => { timeouts.set(++timerId, callback); return timerId; },
     clearTimeout: id => timeouts.delete(id),
   });
-  for (const name of ['sticker-geometry', 'sticker-history', 'sticker-gestures', 'variables', 'camera', 'snap', 'composition', 'preview', 'composition-coordinator', 'edit', 'sticker-editor', 'export', 'gallery-store', 'gallery', 'settings', 'main']) {
+  for (const name of ['sticker-geometry', 'sticker-history', 'sticker-gestures', 'variables', 'camera', 'snap', 'composition', 'preview', 'composition-coordinator', 'edit', 'sticker-editor', 'export', 'gallery-store', 'gallery', 'motion', 'main']) {
     vm.runInContext(readFileSync(new URL(`../scripts/${name}.js`, import.meta.url), 'utf8'), context);
   }
   return {
@@ -176,7 +179,7 @@ async function captureFour(booth) {
   await settleImages();
 }
 
-test('Purple omits watermark loading and drawing; None restores it and frame switches invalidate PNG cache', async () => {
+test('both frames load and draw the current logo exactly once; switching invalidates the PNG cache', async () => {
   const booth = createBooth();
   await captureFour(booth);
   for (const frame of ['purple', 'none', 'purple']) {
@@ -190,10 +193,12 @@ test('Purple omits watermark loading and drawing; None restores it and frame swi
     assert.notEqual(output, previous);
     assert.equal(output.pngBlob, undefined);
     assert.equal(booth.context.isCompositionCurrent(), true);
-    const watermarkLoaded = booth.loadedImages.slice(loadStart).some(image => image.src.includes('logo_transparent'));
-    const watermarkDrawn = booth.draws.slice(drawStart).some(draw => draw.source.includes('logo_transparent'));
-    assert.equal(watermarkLoaded, frame === 'none');
-    assert.equal(watermarkDrawn, frame === 'none');
+    const loads = booth.loadedImages.slice(loadStart).map(image => image.src);
+    const draws = booth.draws.slice(drawStart).map(draw => draw.source);
+    for (const sources of [loads, draws]) {
+      assert.equal(sources.filter(source => source === 'assets/design/logo-minimal.png').length, 1);
+      assert.equal(sources.some(source => source.includes('logo_transparent')), false);
+    }
     await booth.element('download').onclick();
     await booth.element('download').onclick();
     assert.equal(booth.downloads.at(-1).href, output.dataURL);
@@ -1929,15 +1934,15 @@ test('dismissing a confirmed deletion before transaction completion aborts it', 
 
 test('choosing the current destination closes the mobile disclosure and focuses its heading', () => {
   const booth = createBooth();
-  booth.context.navigateTo('settings');
+  booth.context.navigateTo('about');
   booth.element('menu-toggle').click();
   assert.equal(booth.read('ui.menuOpen'), true);
-  booth.context.navigateTo('settings');
+  booth.context.navigateTo('about');
   assert.equal(booth.read('ui.menuOpen'), false);
-  assert.equal(booth.element('settings-heading').focusCount, 2);
+  assert.equal(booth.element('about-heading').focusCount, 2);
 });
 
-for (const phase of ['review', 'customize', 'export']) test('five destinations preserve completed session and focus from ' + phase, async () => {
+for (const phase of ['review', 'customize', 'export']) test('four destinations preserve completed session and focus from ' + phase, async () => {
   const booth = createBooth();
   await captureFour(booth);
   if (phase === 'review') booth.context.enterReview();
@@ -1946,7 +1951,7 @@ for (const phase of ['review', 'customize', 'export']) test('five destinations p
   const output = booth.read('session.output');
   const history = booth.read('session.stickerHistory');
   const revision = booth.read('session.revision');
-  for (const destination of ['settings', 'home', 'about', 'gallery', 'booth']) {
+  for (const destination of ['home', 'about', 'gallery', 'booth']) {
     booth.context.navigateTo(destination);
     assert.equal(booth.read('ui.destination'), destination);
     assert.equal(booth.read('ui.menuOpen'), false);
@@ -1956,6 +1961,6 @@ for (const phase of ['review', 'customize', 'export']) test('five destinations p
     assert.equal(booth.read('session.revision'), revision);
     assert.equal(booth.read('ui.phase'), phase);
   }
-  assert.equal(booth.element('settings-screen').style.display, 'none');
-  assert.equal(booth.element('settings-heading').focusCount, 1);
+  assert.equal(booth.element('about-screen').style.display, 'none');
+  assert.equal(booth.element('about-heading').focusCount, 1);
 });

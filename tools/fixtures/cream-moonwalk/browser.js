@@ -33,9 +33,10 @@
   const digest = async bytes => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
     value => value.toString(16).padStart(2, '0')).join('');
   const outputs = [], checks = [];
+  const sheet = reviewImages ? await loadSessionImage(reviewImages['sample-captures'], 0) : null;
   ui.destination = 'booth'; ui.phase = 'customize';
   session.id = 1;
-  const logo = await loadSessionImage('assets/logos/logo_transparent.png', 0);
+  const logoPath = 'assets/design/logo-minimal.png';
   const frame = await loadSessionImage('assets/frames/purple.png', 0);
   const alpha = pixels(await decode(imageSources['assets/frames/purple.png']));
   check(alpha.some((value, i) => i % 4 === 3 && value === 0), 'Transparent frame pixels');
@@ -45,6 +46,16 @@
   ]) {
     const photos = Array.from({ length: 4 }, (_, index) => {
       const c = canvas(width, height), ctx = c.getContext('2d');
+      if (sheet) {
+        const quadrantWidth = Math.floor(sheet.width / 2);
+        const quadrantHeight = Math.floor(sheet.height / 2);
+        const scale = Math.min(quadrantWidth / width, quadrantHeight / height);
+        const w = width * scale, h = height * scale;
+        const x = (index % 2) * quadrantWidth + (quadrantWidth - w) / 2;
+        const y = Math.floor(index / 2) * quadrantHeight + (quadrantHeight - h) / 2;
+        ctx.drawImage(sheet, x, y, w, h, 0, 0, width, height);
+        return c;
+      }
       // Distinct numbered-color quadrants and asymmetric edge marks reveal crop, mirror and order errors.
       const colors = [['#bd3344', '#42bc67', '#3355ca', '#f5cd21'],
         ['#ab47bc', '#26a69a', '#ef6c00', '#1565c0'],
@@ -63,7 +74,6 @@
     const decodedPhotos = await Promise.all(session.photos.map(photo => loadSessionImage(photo.source, 0)));
     const photoHeight = Math.round(600 * height / width);
     const withoutLogo = composePhotoStrip(decodedPhotos, null, width, height, () => canvas(1, 1));
-    const withLogo = composePhotoStrip(decodedPhotos, logo, width, height, () => canvas(1, 1));
     const purpleControl = composeFrame(withoutLogo, frame, () => canvas(1, 1));
     const mask = canvas(700, stripHeight);
     mask.getContext('2d').drawImage(frame, 0, 0, 700, stripHeight);
@@ -78,24 +88,48 @@
       const output = session.output;
       check(output !== oldOutput && !output.pngBlob && !output.pngPromise, 'Frame change invalidates cached PNG');
       check(isCompositionCurrent(), 'New revision is current');
-      check(loads.slice(loadStart).includes('assets/logos/logo_transparent.png') === (frameName === 'none'),
-        'Only None loads watermark');
+      const requested = loads.slice(loadStart);
+      check(requested.filter(source => source === logoPath).length === 1, 'Current mark loaded exactly once');
+      check(!requested.some(source => source.includes('logo_transparent')), 'No legacy logo load');
       check(output.canvas.width === 700 && output.canvas.height === stripHeight, 'Output geometry');
       const actual = pixels(output.canvas);
       check(differences(actual, pixels(await decode(document.getElementById('compiled-strip').src))) === 0,
         'Editor preview decoded equality');
-      const control = frameName === 'none' ? withLogo : purpleControl;
-      check(differences(actual, pixels(control)) === 0, `Exact independent composition equality: ${aspect} ${frameName}`);
-      const watermarkPixels = frameName === 'none'
-        ? differences(actual, pixels(withoutLogo)) : differences(actual, pixels(purpleControl));
-      check(frameName === 'none' ? watermarkPixels > 0 : watermarkPixels === 0, 'Watermark contribution');
+      const name = `${frameName}-${aspect}`;
+      const control = frameName === 'none' ? withoutLogo : purpleControl;
+      const photoEnd = stripHeight - 150;
+      const regionPixels = (c, x, y, w, h) => c.getContext('2d').getImageData(x, y, w, h).data;
+      let upperStart = 0;
+      for (let i = 0; i < 3; i++) {
+        const gapTop = 50 + photoHeight + i * (photoHeight + 30);
+        const gap = regionPixels(output.canvas, 50, gapTop, 600, 30);
+        const rail = regionPixels(control, 24, gapTop, 1, 30);
+        check(gap.every((value, offset) => value === rail[Math.floor(offset / 2400) * 4 + offset % 4]),
+          'Every gap pixel matches the side paper');
+        check(differences(regionPixels(output.canvas, 0, upperStart, 700, gapTop - upperStart),
+          regionPixels(control, 0, upperStart, 700, gapTop - upperStart)) === 0,
+        'Rows outside the gaps match the control');
+        upperStart = gapTop + 30;
+      }
+      check(differences(regionPixels(output.canvas, 0, upperStart, 700, photoEnd - upperStart),
+        regionPixels(control, 0, upperStart, 700, photoEnd - upperStart)) === 0,
+      'Rows through the fourth photo match the control');
+      if (reviewImages) {
+        // Compare the approved design below the photos. The review harness used
+        // in-memory canvases for its captures; the app decodes captured PNGs.
+        const footer = c => c.getContext('2d').getImageData(0, photoEnd, 700, 150).data;
+        check(differences(footer(output.canvas), footer(await decode(reviewImages[`${name}-after`]))) === 0,
+          `Production footer pixels match the approved PNG: ${name}`);
+      }
       const regions = [];
       for (let i = 0; i < 4; i++) {
         const y = 50 + i * (photoHeight + 30);
         const expectedPhoto = canvas(600, photoHeight);
         expectedPhoto.getContext('2d').drawImage(decodedPhotos[i], 0, 0, 600, photoHeight);
         const region = output.canvas.getContext('2d').getImageData(50, y, 600, photoHeight).data;
-        check(differences(region, pixels(expectedPhoto)) === 0, 'Every photo pixel, edge, orientation and order unchanged');
+        const expected = sheet ? withoutLogo.getContext('2d').getImageData(50, y, 600, photoHeight).data
+          : pixels(expectedPhoto);
+        check(differences(region, expected) === 0, 'Every photo pixel, edge, orientation and order unchanged');
         let touched = 0;
         for (let row = y; row < y + photoHeight; row++) for (let x = 50; x < 650; x++) {
           if (maskPixels[(row * 700 + x) * 4 + 3]) touched++;
@@ -117,12 +151,11 @@
         check(differences(actual, pixels(await decode(target))) === 0, 'Download decoded RGBA equals preview');
         check(output.pngBlob === cachedBlob, 'Repeated download reuses matching PNG cache');
       }
-      const name = `${frameName}-${aspect}`;
       if (previous[frameName]) check(previous[frameName] === output.dataURL, 'Switching round trip preserves exact PNG');
       else {
         previous[frameName] = output.dataURL;
         outputs.push({ name, png: output.dataURL, rgbaSha256: await digest(actual) });
-        checks.push({ name, width: 700, height: stripHeight, watermarkPixels, regions,
+        checks.push({ name, width: 700, height: stripHeight, matchedApprovedFooter: !!reviewImages, regions,
           repeatedDownloads: 2, pngByteEquality: true, decodedEquality: true, cacheInvalidated: true });
       }
       backToCustomizing();

@@ -10,7 +10,7 @@ const browserAppGlobalNames = [
   'session', 'ui', 'operations', 'rowCount', 'previewImages',
   'startButton', 'homeScreen', 'boothScreen', 'snapButton', 'previewStrip',
   'video', 'wrapper', 'downloadButton', 'shareButton', 'frameButtons',
-  'composePhotoStrip', 'composeFrame', 'updateFrameSelection', 'exitPhotobooth',
+  'composePhotoStrip', 'composeFrame', 'noneFooterFont', 'updateFrameSelection', 'exitPhotobooth',
   'hasUsableVideo', 'loadSessionImage', 'setCameraStatus', 'setExportEnabled',
   'addPlaceholderImages', 'applyFrame', 'cancelCountdown', 'generatePhotoStrip',
   'goToEditScreen', 'restartPhotobooth', 'showFinalStrip', 'startCamera',

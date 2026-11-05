@@ -22,7 +22,6 @@
             <button class="text-button" data-destination="home" aria-current="page">Home</button>
             <button class="text-button" data-destination="booth">Photobooth</button>
             <button class="text-button" data-destination="gallery">Gallery</button>
-            <button class="text-button" data-destination="settings">Settings</button>
             <button class="text-button" data-destination="about">About</button>
         </nav>
     </header>
@@ -120,7 +119,7 @@
                             <div class="history-actions"><button id="undo-sticker" class="text-button" disabled>Undo</button><button id="redo-sticker" class="text-button" disabled>Redo</button></div>
                             <label class="zoom-control">Zoom <input id="preview-zoom" type="range" min="80" max="140" value="100" step="10"><output id="preview-zoom-value" for="preview-zoom">100%</output></label>
                         </div>
-                        <div id="preview-viewport"><div id="strip-scroll"><div id="strip-stage"><div id="strip-preview"></div><div id="sticker-layer" aria-label="Stickers on your strip"></div></div></div></div>
+                        <div id="preview-viewport"><div id="strip-scroll" role="region" aria-label="Photo strip" tabindex="0"><div id="strip-stage"><div id="strip-preview"></div><div id="sticker-layer" aria-label="Stickers on your strip"></div></div></div></div>
                     </div>
                     <div class="under-preview">
                         <button id="back-to-review" class="text-button">Review photos</button>
@@ -209,30 +208,10 @@
                 <button id="gallery-previous" class="secondary">Previous</button><span id="gallery-page-number"></span><button id="gallery-next" class="secondary">Next</button>
             </div>
         </section>
-        <section id="settings-screen" class="settings-page" style="display: none;" aria-labelledby="settings-heading">
-            <div class="intro"><h2 id="settings-heading" tabindex="-1">Your kind of magic.</h2></div>
-            <section class="preference-section" aria-labelledby="motion-heading">
-                <h3 id="motion-heading">Motion</h3>
-                <p id="motion-description">Follow your device, or keep things still.</p>
-                <fieldset class="preference-options" aria-describedby="motion-description motion-storage-status">
-                    <legend class="visually-hidden">Motion preference</legend>
-                    <label><input type="radio" name="motion" value="system" checked>Follow my device</label>
-                    <label><input type="radio" name="motion" value="reduce">Reduce motion</label>
-                </fieldset>
-                <p id="motion-storage-status" role="status" aria-live="polite" aria-atomic="true"></p>
-            </section>
-            <section class="preference-section" aria-labelledby="photos-heading">
-                <h3 id="photos-heading">Your photos</h3>
-                <p>Only strips you choose to save go to Gallery. Finished PNGs stay in this browser profile and site origin.</p>
-                <p>Browser storage can be cleared or evicted. Gallery isn’t a permanent backup or cloud sync. Download PNG gives you a separate copy.</p>
-                <a id="settings-gallery" class="settings-gallery" href="#gallery">Open Gallery</a>
-            </section>
-        </section>
         <section id="about-screen" class="about-content" style="display: none;" aria-labelledby="about-heading">
             <h2 id="about-heading" tabindex="-1">A little strip of happy.</h2>
             <p>Capture four photos, review and retake, choose a frame and pixel stickers, then download a PNG or share where supported.</p>
             <details><summary>Privacy &amp; your photos</summary><p>Enable camera requests video, never audio. Captures and edits stay in memory for this session; reloading or leaving clears that session. Save to Gallery explicitly stores only a finished PNG in this browser profile and site origin. It may be lost when site data is cleared or storage is evicted, and is not automatically backed up or synchronized. Download requests a separate PNG copy only when you choose. Share opens your device’s sharing flow where supported; you choose its destination.</p></details>
-            <details><summary>Credits</summary><p>Design artwork and the minimal logo are AI-generated. Fonts: Fraunces and DM Sans, licensed under the SIL Open Font License. Camera and brand sparkle icons: Phosphor, MIT license. The original watermark and Purple frame come from Snapicorn; redistribution rights remain unconfirmed. See the repository’s asset inventory and license notices.</p></details>
         </section>
     </main>
     <dialog id="retake-dialog" aria-labelledby="retake-heading" aria-describedby="retake-description">
@@ -282,7 +261,7 @@
     <script src="scripts/export.js"></script>
     <script src="scripts/gallery-store.js"></script>
     <script src="scripts/gallery.js"></script>
-    <script src="scripts/settings.js"></script>
+    <script src="scripts/motion.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 

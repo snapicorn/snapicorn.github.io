@@ -21,7 +21,7 @@ const activeScripts = [
   'export.js',
   'gallery-store.js',
   'gallery.js',
-  'settings.js',
+  'motion.js',
   'main.js',
 ];
 
@@ -230,11 +230,11 @@ test('screen semantics use native frame radios, current steps and one contextual
 
 test('navigation exposes only working destinations and both dialogs have accessible labels', () => {
   const html = readFileSync(path.join(repositoryRoot, 'index.html'), 'utf8');
-  assert.deepEqual([...html.matchAll(/data-destination="([^"]+)"/g)].map(match => match[1]), ['home', 'booth', 'gallery', 'settings', 'about']);
+  assert.deepEqual([...html.matchAll(/data-destination="([^"]+)"/g)].map(match => match[1]), ['home', 'booth', 'gallery', 'about']);
   assert.match(html, /id="menu-toggle"[^>]+aria-expanded="false"[^>]+aria-controls="site-nav"/);
   for (const dialog of ['retake', 'restart']) {
     assert.match(html, new RegExp(`<dialog id="${dialog}-dialog" aria-labelledby="${dialog}-heading" aria-describedby="${dialog}-description"`));
   }
   assert.match(html, /id="gallery-preview-dialog"[^>]*aria-labelledby="gallery-preview-heading"/);
-  assert.match(html, /id="settings-heading" tabindex="-1"/);
+  assert.doesNotMatch(html, /id="settings-screen"/);
 });

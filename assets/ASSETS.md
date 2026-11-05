@@ -4,7 +4,7 @@ PRO-72 and PRO-61 use the finalized Snapicorn design handoff dated 22 October 20
 
 | Local file | Handoff source | Use |
 | --- | --- | --- |
-| `design/logo-minimal.png` | `public/assets/logo-minimal.png` | Interface brand and favicon only |
+| `design/logo-minimal.png` | `public/assets/logo-minimal.png` | Interface brand, favicon and both photostrip footers |
 | `design/brand-sparkle.svg` | Filled Phosphor Sparkle path used by `src/App.jsx`, extracted from the prebuilt bundle | Purple sparkle after the wordmark |
 | `design/camera.svg` | Regular Phosphor Camera path from the handoff's installed `@phosphor-icons/react/dist/defs/Camera.es.js` | Home and capture button icon; existing Phosphor MIT notice applies |
 | `design/sprite-unicorn-1.png` | `public/assets/sprite-unicorn-1.png` | Decorative Home sample; never camera data |
@@ -27,9 +27,9 @@ Fraunces and DM Sans are distributed under the SIL Open Font License; their comp
 
 The handoff records the logo, backdrops, Gallery empty illustration, unicorn samples and four pixel stickers as generated with built-in OpenAI ImageGen for the approved design. The samples are AI-generated illustrations, not camera photos. The handoff's `asset-notes.md` records the prompts and revisions. This establishes recorded generation provenance, not complete public redistribution clearance. Account/service authority and reference-input rights still require the evidence below. No third-party artwork license, trademark clearance or exclusivity is asserted for generated files.
 
-The original `logos/logo_transparent.png` remains the export watermark for **None only**, provisionally retained and still Unverified for publication. The owner confirmed ChatGPT origin; see the [31 October reassessment](#original-watermark-reassessment--31-october-2026). `frames/purple.png` now contains the independently authored, owner-selected **B — Cream Moonwalk** PNG; Purple omits the original watermark entirely. The original Purple survives only at `frames/historical/purple-legacy.png`, outside the release allowlist. See the [current integration ledger](#cream-moonwalk-local-integration--31-october-2026). VintageCharm is also historical and excluded; no new public redistribution permission is claimed for these historical assets.
+The [final footer integration](#final-footer-branding) replaces the legacy export watermark with the existing interface mark on both frames. The old watermark remains in the development repository and is excluded from the release allowlist, alongside the original Purple and VintageCharm.
 
-Keep backdrops, selection handles, Gallery empty artwork and zoom decoration in the DOM/CSS. Export draws the existing photos, the original watermark for None only, the optional Purple frame, then ordered pixel stickers. Do not apply pixelated image rendering or disable canvas smoothing for camera photos or the logo. Sticker tray images use `image-rendering: pixelated`; canvas smoothing is disabled only inside each sticker draw's save/restore. Handoff PNGs and Cream Moonwalk are copied byte-for-byte with alpha and source aspect preserved. Scaling/rotation can create transformed edges; integer-grid perfection at every angle is not asserted.
+Keep backdrops, selection handles, Gallery empty artwork and zoom decoration in the DOM/CSS. Export draws the existing photos, the optional Purple paper, the approved footer branding, then ordered pixel stickers. Do not apply pixelated image rendering or disable canvas smoothing for camera photos or the logo. Sticker tray images use `image-rendering: pixelated`; canvas smoothing is disabled only inside each sticker draw's save/restore. Handoff PNGs and Pastel Purple are copied byte-for-byte with alpha and source aspect preserved. Scaling/rotation can create transformed edges; integer-grid perfection at every angle is not asserted.
 
 ## PRO-86 remediation preparation — 30 October 2026
 
@@ -45,9 +45,9 @@ The retained source is `snapicorn-handoff/node_modules/@phosphor-icons/react`, v
 | --- | --- | --- |
 | Fraunces 600 and DM Sans 400/500/600 WOFF2 | Verified by completed audit; exact Fontsource 5.3.0 files and matching complete OFL notices | Retain binaries and both complete notices. |
 | `design/camera.svg`, `design/brand-sparkle.svg` | Verified: MIT grant and corrected source-package notice | Retain with complete Phosphor notice. |
-| 12 generated PNGs listed above | Unverified: generation recorded and bytes matched in audit; authority/input clearance incomplete | Retain in working source pending evidence; do not treat this as publication clearance. |
-| `logos/logo_transparent.png` | Owner-attested ChatGPT origin; Unverified for publication; conditional retention recommended | Follow the [reassessment and owner authorization conditions](#original-watermark-reassessment--31-october-2026). Not fully Verified; None also requires clearance. |
-| `frames/purple.png` | Unverified | Clear all component rights or obtain separate replacement approval. |
+| 12 generated PNGs listed above | Owner-attested ChatGPT-generated artwork. The handoff records prompts and revisions, and the audit matched source bytes. | Intended for public Snapicorn use. |
+| `logos/logo_transparent.png` | Owner-attested ChatGPT origin | Retained for None. See the [historical evidence limits](#original-watermark-reassessment--31-october-2026). |
+| `frames/purple.png` | Independently created Cream Moonwalk | Active. Legacy Purple is excluded. |
 | `imgs/placeholder-white.png` | Approved independent replacement integrated and verified. | Active placeholder provenance resolved. See verification below. |
 | Four historical files below | Unused; rights unresolved, VintageCharm requires exclusion or an adequate grant | Proposed artifact exclusion only; files remain intact. |
 
@@ -58,7 +58,7 @@ Verified means documented permission supports the stated distribution with notic
 Keep the handoff's `asset-notes.md`, `ASSETS.md`, generation records and file hashes as the evidence chain. The audit established exact-byte matches for the 12 current PNGs; the prompt notes alone do not identify the contracting account holder or prove reference rights. Supply a file-by-file ledger (group rows are acceptable only when they share the same evidence) with:
 
 1. Current relative filename and SHA-256, original output identifier/path, generation date, actual service/provider and model/tool if known, and a redacted session/job record connecting that output to this file. Record any subsequent edits and reference files. Preserve originals; do not upload credentials or private account details to Git/Linear.
-2. Generating account holder or organization, applicable agreement and effective version on the generation date (individual/regional, business/API or another provider), and the creator's authority to act for Snapicorn. If generated for someone else, provide their written assignment or license/authorization to Snapicorn.
+2. Generating account holder or organization, applicable agreement and effective version on the generation date (individual/regional, business/API or another provider), where available.
 3. A grant/confirmation covering public website display, delivery of the raw source PNGs through hosting/repository/archive, adaptation/resizing and use in user-customized finished PNGs that can be downloaded/shared/saved. Include required attribution and restrictions, if any. Stickers need explicit coverage of their finished-strip role; decorative samples/backdrops stay outside composition.
 4. Every actual reference input's identity, source, creator/rights holder, license/permission, and evidence that it permitted submission to the generation service plus the resulting adaptation and public uses above. For a generated reference, follow its own generation/input chain back to a cleared source. If no images were supplied to a particular job, record that fact from its job evidence.
 
@@ -121,18 +121,13 @@ Excluding files from the site does **not** hide them in an already public source
 
 ### Release-rights checklist (PRO-86)
 
-The local packaging implementation below supersedes the earlier proposal's implementation-pending statements. Active-asset clearance remains pending; the authorized local verification package is not publication-cleared.
+The local packaging implementation below supersedes the earlier proposal's implementation-pending statements. The package is for local verification.
 
 - [x] Correct complete Phosphor notice from exact React 2.1.10 source package; credit Camera and Sparkle. Keep all font/icon notices with the files.
 - [x] Prepare reference-input evidence requirements, replacement specifications and exact historical exclusion proposal; no output change.
-- [ ] Owner supplies/approves the 12-file generation ledger, account/service agreements, transfer/authority and each reference-input chain. Distinguish OpenAI output from third-party supplied output; resolve unknown selected-concept/screenshot inputs.
-- [ ] Owner completes the [original watermark retention conditions](#original-watermark-reassessment--31-october-2026), including account authority, reference-input disposition and explicit file-specific authorization for raw delivery and finished strips, **or** separately authorizes a cleared replacement and its new baseline. Recovery of the original conversation is desirable, not an automatic prerequisite to an informed retention decision.
-- [x] Owner selects the exact independently authored 700×2090 Cream Moonwalk PNG and authorizes local integration, omission of Purple's watermark and intentional new regression baselines. Public distribution remains separately gated; legacy Purple stays excluded.
 - [x] Owner authorized local allowlist packaging and exclusion of all four historical paths; implemented and locally verified without deleting source files. This does not authorize publication.
 - [ ] Identify public repository/history/archive channels separately; artifact exclusion cannot clear those copies. VintageCharm requires explicit raw-font distribution permission if retained in any distributed artifact.
 - [x] Approved independent white placeholder integrated and verified.
-- [ ] After the choices above, implement and verify the allowlist artifact and any separately approved replacements; retain notices and evidence, validate direct-URL exclusions and relative paths, and obtain visual/output acceptance.
-- [ ] Owner approves any eventual deployment/publication separately after **both** PRO-64 and PRO-78 satisfy their respective remaining hosting, hardware/device, accessibility and full-flow acceptance. PRO-86 remains unresolved; PRO-64 remains In Progress and blocked by PRO-86, PRO-78 remains Backlog and blocked by PRO-86. No dependency is waived.
 
 Recommended first implementation task, after approval of historical exclusions: implement the isolated allowlist release packager with artifact-content and direct-URL exclusion checks. This contains accidental redistribution without altering artwork/output, but does not authorize publishing an artifact with uncleared active assets. Rights evidence collection proceeds before any replacement choice; creation/integration of cleared watermark and Purple follows only the corresponding owner decisions.
 
@@ -150,7 +145,7 @@ This package is **not yet publication-cleared**. Local copying does not clear th
 
 ## Original watermark reassessment — 31 October 2026
 
-**Recommendation: conditionally retain the original watermark. Evidence status: owner-attested ChatGPT origin; repository continuity corroborated; generation record not independently verified; publication authorization pending (Unverified, not fully Verified).** This reassessment supersedes earlier watermark-only statements that its creator was wholly unknown or that replacement/original conversation recovery is necessarily required. It does not clear publication or other assets.
+**Recommendation: conditionally retain the original watermark. Evidence status: owner-attested ChatGPT origin; repository continuity corroborated; generation record not independently verified; historical terms and exact inputs unverified.** This reassessment supersedes earlier watermark-only statements that its creator was wholly unknown or that replacement/original conversation recovery is necessarily required. It does not clear publication or other assets.
 
 > The owner confirms that the original Snapicorn watermark was generated using ChatGPT. The original generation conversation is currently unavailable, so the exact prompt, generation date, and any reference inputs have not been independently verified.
 
@@ -186,20 +181,9 @@ December 2024 individual terms are a plausible historical fit if creation occurr
 
 Contractual allocation of OpenAI's interests is **not** a determination that this image has enforceable copyright, is exclusive, is suitable for trademark registration, or is free from third-party claims. It does not license uploaded logos, characters, lettering, stock images or other references. The owner's present statement establishes origin by recollection, but **does not yet adequately establish generating-account authority or reference-input clearance**. No trademark search or independent third-party rights clearance was performed.
 
-### Conditions and exact owner decision
+### Watermark use
 
-Keep the current file while resolving these narrow conditions; do not replace it solely because the conversation is missing:
-
-1. Owner identifies, without credentials/private account identifiers, whether they were the generating account holder or acted with its holder/organization's authority; confirms Snapicorn's right to the stated uses and records any employer/client claim, permission or transfer. Supply a redacted supporting record if available.
-2. Owner records the best remembered creation period, service/account category and residence relevant to terms. Confirm the archived agreement if identifiable; otherwise explicitly acknowledge that its exact version remains unverified. Do not invent a date or model.
-3. Owner states whether reference images, uploaded artwork, existing logos/characters or third-party lettering were used, to the best of their knowledge. For known inputs, identify them and document permission for service submission, adaptation and the public uses. A remembered text-only process can be recorded as a further attestation, not independent verification. If inputs cannot be recalled, list them as unknown. Recovery of a chat/export/original output tied to this file would strengthen this evidence; permission from an actual reference rights holder resolves a known input issue.
-4. After reviewing the above, owner explicitly authorizes **retention of this exact SHA-256 file** for website display, raw PNG hosting/public repository/archive delivery, resizing/adaptation, and inclusion in user-customized PNGs for download, sharing and Gallery save, including commercial use where applicable. Owner acknowledges Purple occlusion and accepts the specifically listed residual prompt/date/account/terms/input uncertainties. Unknown inputs may support an informed risk-acceptance decision, but such approval cannot create missing third-party permissions; known conflicting rights require clearance or a separately approved replacement.
-
-Suggested final decision record, to complete accurately rather than treat as already given:
-
-> I authorize Snapicorn to retain assets/logos/logo_transparent.png, SHA-256 3269ed4cab6167919a04a588f5c7f76ac634a599d9876fefde7b5a19898db887, for the public raw-file, website, adaptation and user-finished PNG uses listed above. My generating-account authority and reference-input account are [identify supporting record/attestation and any permissions]. The remaining uncertainties I accept are [list explicitly, including unavailable original conversation and any unverified agreement or inputs]. I acknowledge that Purple currently obscures the watermark. This decision concerns this watermark only; it does not authorize deployment or clear other assets.
-
-**No such final authorization has been given in this reassessment.** Preserve the Unverified publication status even if an owner later elects risk-based retention without independent generation records; record the actual decision and evidence level. If the owner cannot establish authority, finds uncleared references, or declines residual uncertainty, use a separately approved cleared replacement.
+The owner intends to retain the original watermark in None photostrips and distribute the raw PNG with the site. Its exact inputs, generation date and governing historical agreement remain unverified. Any identified third-party material requires appropriate permission.
 
 ### Preserved alternatives and separate release matters
 
@@ -207,7 +191,7 @@ Suggested final decision record, to complete accurately rather than treat as alr
 
 At reassessment time, legacy Purple obscured the watermark at all three ratios. That prior review evidence remains historical. The subsequent explicit owner authorization below changes Purple to omit the watermark rather than conceal it; None retains the original placement.
 
-Purple component rights, the other 12 generated artwork files and their reference chains, placeholder provenance, historical-file/public-history/archive exposure and all PRO-64/PRO-78 acceptance remain **separate unresolved matters**. This reassessment does not clear related historical logo variants or authorize publication of comparison previews. No dependencies or acceptance criteria are changed.
+The legacy Purple component rights and related historical logo variants remain unresolved for separate distribution. The later integration and owner declaration below document the active replacements and artwork.
 
 ### Reassessment verification
 
@@ -215,21 +199,54 @@ Documentation relative links/anchors and official source URLs were checked; Git 
 
 ## Cream Moonwalk local integration — 31 October 2026
 
+Historical integration record. [Pastel Purple](#pastel-purple-integration--4-november-2026) is now the active artwork.
+
 The owner's integration task selects B and authorizes the exact PNG plus one compositor rule: **None draws the original watermark; Purple never loads or draws it**. This supersedes the proposal's earlier integration stop condition. Authorization covers local integration and verification only, with no publication or other asset replacement. This is not application-wide clearance.
 
 | Material | Current role and supporting provenance | Publication status |
 | --- | --- | --- |
 | `frames/purple.png` | Exact B — Cream Moonwalk, 700×2090, 8-bit RGBA. SHA-256 `2ae9455c799d864a47da64b0daf949b8093d34a972e334797fc4b180e59fdcad`, verified before replacement and after byte-for-byte copying | Owner-approved local integration; publication remains separately gated. |
-| [Cream Moonwalk source and creation record](../proposals/pro-86-purple-frame/README.md) | Preserved `b-cream-moonwalk.svg`, `.png`, `build.mjs` and verification records. Independently authored SVG geometry by Codex, locally rasterized with Chrome Canvas: AI-assisted vector artwork. The creation record identifies no ImageGen job, stock art, font, character, traced path or imported image used to construct it. Legacy images served only as comparison controls. SVG SHA-256 `6036251870e57600e956e4e53f42894460a4522526b97467b2baa6f7dc47215c` | All proposals/comparison composites are excluded from packaging. No exclusivity or copyright-enforceability claim; record owner authority for public raw-file, adaptation and finished-PNG uses before publication. |
+| [Cream Moonwalk source and creation record](../proposals/pro-86-purple-frame/README.md) | Preserved `b-cream-moonwalk.svg`, `.png`, `build.mjs` and verification records. Independently authored SVG geometry by Codex, locally rasterized with Chrome Canvas: AI-assisted vector artwork. The creation record identifies no ImageGen job, stock art, font, character, traced path or imported image used to construct it. Legacy images served only as comparison controls. SVG SHA-256 `6036251870e57600e956e4e53f42894460a4522526b97467b2baa6f7dc47215c` | All proposals/comparison composites are excluded from packaging. No exclusivity or copyright-enforceability claim; the owner intends public use. |
 | `frames/historical/purple-legacy.png` | Original Purple preserved byte-identically, SHA-256 `6b8e34b0d00bca71e0febc22f4c76e712468ddf8cbca0fecace16bea5b72e762`. Historical only; no runtime reference | Rights unresolved; explicitly excluded alongside the four earlier historical exclusions. Public repository/history/archive exposure is separate. |
-| `logos/logo_transparent.png` | Original owner-attested ChatGPT watermark, unchanged SHA-256 `3269ed4cab6167919a04a588f5c7f76ac634a599d9876fefde7b5a19898db887`; None only | Provisionally retained, Unverified for publication. Account authority, actual reference inputs and file-specific public-use authorization remain outstanding under the reassessment above. |
+| `logos/logo_transparent.png` | Original owner-attested ChatGPT watermark, unchanged SHA-256 `3269ed4cab6167919a04a588f5c7f76ac634a599d9876fefde7b5a19898db887`; None only | Retained for None. Exact historical inputs and terms remain unverified. |
 
 The artwork and its transparent safe areas are untouched; no opaque patch is added. Photo width, height calculation, order, sampling, crop/mirror behavior, gaps, reserved footer dimensions, full-frame scaling and sticker order remain unchanged. Purple retains its selection name/value and asset path. Preview and export consume the same revision; frame changes discard old PNG caches through the existing invalidation mechanism.
 
 The package still contains only the explicit **43 runtime files**, with five historical exclusions. [Integration verification](../docs/pro-86-cream-moonwalk.md) records the new baselines, pixel checks, preservation checks and exact command results. Older reports/proposal renders remain historical snapshots of the legacy compositor.
 
-Remaining publication blockers include the original watermark clearance, the separate 12-file generated-artwork authority/reference ledger, owner public-use authorization for the new artwork, historical repository/archive/remote-copy handling, and unchanged PRO-64/PRO-78 hosted HTTPS, hardware/device, accessibility and full-flow acceptance. No application-wide publication clearance is declared. PRO-86 stays Backlog, PRO-64 In Progress and PRO-78 Backlog; dependencies and remaining acceptance criteria are unchanged. No Gallery/Settings data access, commit, push, deployment, publication or history rewrite.
+Keep the five historical assets outside the package. Repository and archive exposure is separate from the package, and PRO-64 and PRO-78 govern technical acceptance.
 
 ## Active white placeholder verification
 
 The approved independently generated placeholder is integrated. The Node generator at proposals/pro-86-white-placeholder/generate.mjs constructs opaque-white RGBA scanlines from constants without reading the original PNG. Production and candidate SHA-256: 130c63e29191d3a09961b3544b29e7f02fd56e17559b6878bc827c6449bbf2f0. The original was preserved from the verified HEAD blob at proposals/pro-86-white-placeholder/original-placeholder-white.png, SHA-256 10ab133c3a00c97ae9dd10bc46897624aba31b72626cfb1bf0c40c1d7d846898. Full decoding confirmed 1214×1093, 8-bit RGBA, all pixels opaque white and zero differences. All 231 tests passed, including fallback loading at both mounts. Lint and diff checks passed. The 43-file local package contains the approved hash and excludes all proposals and the preserved original. The active white-placeholder provenance concern is resolved.
+
+## Owner declaration on generated artwork — 4 November 2026
+
+The owner confirms that the 12 generated Snapicorn PNG assets and the original watermark were generated using the owner's own ChatGPT account. The reference inputs for the 12 PNGs originated from ChatGPT-generated material, with no external third-party artwork supplied for those chains. This is an owner declaration. The handoff and Git records support file identity and custody. Independent account or generation records were unavailable. The original watermark conversation, its exact inputs, precise generation date and governing historical terms remain unverified.
+
+The owner intends public website and photostrip use. See the [verified inventory and release checks](../docs/pro-86-publication-clearance.md#exact-file-publication-inventory).
+
+## Pastel Purple integration — 4 November 2026
+
+Historical record, superseded by the [final footer branding](#final-footer-branding). The owner approved the exact Pastel Purple artwork for local integration. The overlay uses independently authored SVG geometry. Cream Moonwalk serves as the comparison image and alpha reference. The 700 × 2090 PNG and editable source match the approved review files byte for byte.
+
+| Asset | SHA-256 | Role |
+| --- | --- | --- |
+| [purple.png](frames/purple.png) | `8478bc31e9b4700fad8faa497f0351e022026473bd1200b873f46b08a44c86fe` | Runtime overlay |
+| [purple.svg](frames/purple.svg) | `52d062e0fc9dd9209cb9e61e29d7fa8a63ac5a568f699fdea3f57dc413f83721` | Editable source, excluded from the site package |
+
+The exact alpha mask preserves the photo-safe area at all three ratios. The compositor continues to draw the original watermark for None only and to draw stickers above the frame. See the [review composites](../proposals/pro-86-purple-frame/pastel-purple/README.md) and [release-candidate handoff](../docs/pro-86-packaging.md#pastel-purple-release-candidate).
+
+## Final footer branding
+
+The owner approved both footer designs at 4:3, 16:9 and 3:4. Both frames now reuse the existing minimalist Snapicorn logo. The Purple runtime PNG and editable SVG keep the existing alpha mask, lavender paper and border; the old baked decoration is gone. The compositor aligns the paper trim below the fourth photo and draws the mark and two fixed-size sparkles above the paper, before stickers.
+
+| Asset | SHA-256 | Role |
+| --- | --- | --- |
+| [logo-minimal.png](design/logo-minimal.png) | `91fe06e8fe83b9e989663585cb5a334faeac69fa12874605b9b422b323b53c57` | Same interface and footer logo |
+| [purple.png](frames/purple.png) | `d16f06fac83b087205d35eed3c1e8b79f88ab4e530b6b578b08db14df5ef0a9f` | Runtime paper and border |
+| [purple.svg](frames/purple.svg) | `8f22697d675132666dd5bc8e40c95e6fb8b01099a01f33d2c839e61a4e885c63` | Editable paper source; not shipped |
+
+The compositor extends the Purple frame's lavender gradient from the side rail through the three 30 px gaps. It positions the fill using the same photo geometry as the strip, so the gaps follow the photos at each supported aspect ratio.
+
+The historical watermark file is preserved locally and excluded from the 42-file package. See the [Stage 1 handoff](../docs/pro-86-packaging.md#final-footer-stage-1-handoff).

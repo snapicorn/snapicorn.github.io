@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snapicorn · Purple frame proposals</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fffaf2;color:#332540;font:16px/1.55 system-ui,sans-serif}main{max-width:1500px;margin:auto;padding:40px 28px}h1,h2,h3{font-family:Georgia,serif;line-height:1.15}h1{font-size:48px;margin:12px 0}h2{font-size:30px;margin-top:44px}h3{font-size:21px;margin:0 0 12px}.eyebrow{color:#7c49c6;font-weight:700;letter-spacing:.12em;font-size:12px}p{max-width:1000px}a{color:#713eb9}button,select{font:inherit;padding:9px 14px;border:1px solid #746384;border-radius:10px;background:white;color:#332540}button{cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #9564d1;outline-offset:4px}.notice{background:#eee4fc;border-left:4px solid #7c49c6;padding:16px 20px;margin:24px 0}.controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:24px 0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.card{border:1px solid #ded2eb;border-radius:16px;background:white;padding:16px;min-width:0}.strip{max-height:1150px;overflow:auto;background:#eee4fc;padding:14px;text-align:center}.strip img{display:block;width:100%;max-width:280px;height:auto;margin:auto}.native .strip img{width:700px;max-width:none}.native .strip{text-align:left}.footer{overflow:auto;margin-top:16px;border-top:1px solid #ded2eb;padding-top:10px}.footer img{display:block;width:700px;max-width:none}.caption{font-size:13px;color:#746384}.raw{display:grid;grid-template-columns:1fr 1fr;gap:24px}.checker{background:conic-gradient(#ded2eb 25%,white 0 50%,#ded2eb 0 75%,white 0) 0 0/20px 20px;text-align:center;padding:20px;height:560px;overflow:auto}.checker img{height:520px;width:auto}.swatches button{margin:4px}table{border-collapse:collapse;width:100%;background:white}th,td{text-align:left;border-bottom:1px solid #ded2eb;padding:10px}code{font-size:13px}section[hidden]{display:none}.tablewrap{overflow:auto}@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:36px}}@media(max-width:550px){main{padding:24px 16px}.grid,.raw{grid-template-columns:1fr}}
+</style>
+<main>
+<div class="eyebrow">SNAPICORN / PRO-86 / LOCAL DESIGN REVIEW</div>
+<h1>A little more magic.<br>Room for every memory.</h1>
+<p>Two original Purple frame directions, drawn as editable vectors. Both use the approved purple, lavender and cream palette. Nothing here is active in production.</p>
+<p><a href="README.md">Provenance &amp; approval notes</a> · <a href="verification.json">Measurements &amp; hashes</a> · <a href="previews/contact-sheet.png">Quick comparison board</a></p>
+<div class="notice"><strong>Owner visual approval required.</strong> Refined A and B touch zero pixels in all four photo regions at all three aspects. The previous 12.25% portrait footer coverage and separator overlaps are eliminated. The extended transparency partially reveals the existing watermark at 4:3 and 16:9; it stays fully hidden at 3:4. Layer order is unchanged. Review this visible artwork trade-off before approval.</div>
+<div class="controls"><label>Photo aspect <select id="aspect"><option value="4x3">4:3 · 700 × 2090</option><option value="16x9">16:9 · 700 × 1642</option><option value="3x4">3:4 · 700 × 3490</option></select></label><button id="native" aria-pressed="false">Show native pixels</button><span class="caption">Full strips fit by width. Footer crops below each strip are always native size; scroll horizontally.</span></div>
+<div id="comparisons"></div>
+<h2>How much of each photograph stays clear?</h2>
+<p>Same openings for A and B. “Clear” counts only pixels with zero overlay alpha; even a partially covered edge counts as touched. All four photos are 100% clear at every reviewed aspect. The renderer rejects any candidate pixel with nonzero overlay alpha inside a photo region.</p>
+<div class="tablewrap"><table><thead><tr><th>Aspect</th><th>Photo 1</th><th>Photo 2</th><th>Photo 3</th><th>Photo 4</th><th>Observed overlay</th></tr></thead><tbody><tr><td>4:3</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td><td>No photograph pixels touched</td></tr><tr><td>16:9</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td><td>No photograph pixels touched</td></tr><tr><td>3:4</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td><td>No photograph pixels touched</td></tr></tbody></table></div>
+<h2>Artwork &amp; alpha</h2>
+<p>Each source is 700 × 2090. One continuous square-edged transparent corridor protects the combined photo area across all three aspects. White photo gaps come from the unchanged base; horizontal artwork separators are removed. No photograph, text, logo, character or stock illustration is embedded in either frame.</p>
+<div class="swatches"><button data-swatch="checker">Checkerboard</button><button data-swatch="#fff">White</button><button data-swatch="#7c49c6">Purple</button><button data-swatch="#332540">Dark</button></div>
+<div class="raw"><article class="card"><h3>A / Lavender Wishes</h3><p class="caption">Lavender paper, tiny cream beads and a geometric wish-horn. Delicate threads connect the footer without entering a photo.</p><p><a href="a-lavender-wishes.png">PNG</a> · <a href="a-lavender-wishes.svg">Editable SVG</a></p><div class="checker"><img src="a-lavender-wishes.png" alt="Lavender Wishes frame with a continuous transparent photo corridor"></div></article><article class="card"><h3>B / Cream Moonwalk</h3><p class="caption">Cream paper, curved side stitches and a lavender moon capsule. A quieter direction with purple accents and a playful orbital footer.</p><p><a href="b-cream-moonwalk.png">PNG</a> · <a href="b-cream-moonwalk.svg">Editable SVG</a></p><div class="checker"><img src="b-cream-moonwalk.png" alt="Cream Moonwalk frame with a continuous transparent photo corridor"></div></article></div>
+<h2>What stays unchanged</h2>
+<p>The local renderer uses the current production functions: white base → four photos → original watermark → full-canvas frame → optional stickers. It supplies original synthetic scenes with numbered labels, asymmetric sun placement and edge markers. No camera or Gallery records are accessed. None and legacy Purple are comparison controls only.</p>
+<p>The opaque footer is decoration, not a replacement watermark. The revised opening partially reveals the watermark at 4:3 and 16:9 through artwork transparency alone. Its clipping and this changed proposal baseline require owner review before integration. Raw legacy artwork in these local composites remains unresolved for publication. Do not publish this directory.</p>
+<p class="caption">31 October 2026 · Isolated proposal · No integration, baseline update, packaging change, commit or publication.</p>
+</main>
+<script>
+const names = [['none','None / control'],['legacy','Legacy Purple / control'],['a-lavender-wishes','A / Lavender Wishes'],['b-cream-moonwalk','B / Cream Moonwalk']];
+const comparisons = document.getElementById('comparisons');
+for (const aspect of ['4x3','16x9','3x4']) {
+  const section = document.createElement('section'); section.dataset.aspect = aspect; section.hidden = aspect !== '4x3'; section.className = 'grid';
+  for (const [name,title] of names) {
+    const article = document.createElement('article'); article.className = 'card';
+    article.innerHTML = `<h3>${title}</h3><div class="strip"><a href="previews/${name}-${aspect}.png"><img src="previews/${name}-${aspect}.png" alt="${title}, ${aspect} synthetic four-photo strip"></a></div><div class="footer"><img src="previews/${name}-${aspect}-footer.png" alt="Native bottom 180 pixels: ${title}, ${aspect}"></div><p class="caption">${name === 'none' ? 'Watermark visible' : name === 'legacy' || aspect === '3x4' ? 'Watermark fully covered' : 'Watermark partially visible / clipped'} · original layer order</p>`;
+    section.append(article);
+  }
+  comparisons.append(section);
+}
+document.getElementById('aspect').onchange = event => document.querySelectorAll('[data-aspect]').forEach(section => { section.hidden = section.dataset.aspect !== event.target.value; });
+document.getElementById('native').onclick = event => { const active = comparisons.classList.toggle('native'); event.target.setAttribute('aria-pressed', String(active)); event.target.textContent = active ? 'Fit strips to columns' : 'Show native pixels'; };
+document.querySelectorAll('[data-swatch]').forEach(button => { button.onclick = () => document.querySelectorAll('.checker').forEach(swatch => { swatch.style.background = button.dataset.swatch === 'checker' ? '' : button.dataset.swatch; }); });
+</script>
+</html>

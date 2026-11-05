@@ -21,7 +21,7 @@ export const packageFiles = Object.freeze([
   'scripts/export.js',
   'scripts/gallery-store.js',
   'scripts/gallery.js',
-  'scripts/settings.js',
+  'scripts/motion.js',
   'scripts/main.js',
   'styles/foundation.css',
   'styles/style.css',
@@ -43,7 +43,6 @@ export const packageFiles = Object.freeze([
   'assets/stickers/sticker-pixel-rainbow.png',
   'assets/stickers/sticker-pixel-unicorn.png',
   'assets/stickers/sticker-pixel-heart.png',
-  'assets/logos/logo_transparent.png',
   'assets/frames/purple.png',
   'assets/imgs/placeholder-white.png',
   'assets/licenses/fraunces-OFL.txt',
@@ -55,6 +54,7 @@ export const historicalExclusions = Object.freeze([
   'assets/frames/historical/purple-legacy.png',
   'assets/fonts/VintageCharm-Regular.otf',
   'assets/logos/logo_filled.png',
+  'assets/logos/logo_transparent.png',
   'assets/logos/snapicorn.png',
   'assets/imgs/placeholder-black.png',
 ]);
@@ -142,7 +142,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     if (process.argv.length !== 2) throw new Error('No arguments accepted; output is fixed at dist/local-package.');
     const output = buildPackage(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'));
     console.log(`Local package: ${output} (${packageFiles.length} files; ${historicalExclusions.length} historical exclusions).`);
-    console.log('NOT PUBLICATION-CLEARED: active artwork rights and PRO-64/PRO-78 acceptance remain unresolved.');
+    console.log('See docs/pro-86-packaging.md for release verification and deployment scope.');
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

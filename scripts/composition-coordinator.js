@@ -33,12 +33,16 @@ async function requestComposition() {
             photos.push(await loadSessionImage(photo.source, generation));
             if (!isCurrent()) return false;
         }
-        // Purple has its own footer artwork; omit the watermark rather than covering photos.
-        const logo = frameName === 'none'
-            ? await loadSessionImage('assets/logos/logo_transparent.png', generation) : null;
+        const logo = await loadSessionImage('assets/design/logo-minimal.png', generation);
         if (!isCurrent()) return false;
-        const base = composePhotoStrip(photos, logo, geometry.width, geometry.height,
-            () => document.createElement('canvas'));
+        if (frameName === 'none') {
+            await document.fonts.load(noneFooterFont);
+            if (!isCurrent()) return false;
+        }
+        const createCanvas = () => document.createElement('canvas');
+        // Purple branding goes above the paper; the white base only draws it for None.
+        const base = composePhotoStrip(photos, frameName === 'none' ? logo : null,
+            geometry.width, geometry.height, createCanvas);
         const baseURL = base.toDataURL('image/png');
         const frame = frameName === 'purple' ? await loadSessionImage('assets/frames/purple.png', generation) : null;
         if (!isCurrent()) return false;
@@ -50,7 +54,7 @@ async function requestComposition() {
             if (!isCurrent()) return false;
         }
         const canvas = frame || stickers.length
-            ? composeFrame(base, frame, () => document.createElement('canvas'), stickers, images) : base;
+            ? composeFrame(base, frame, createCanvas, stickers, images, frame ? logo : null) : base;
         const dataURL = canvas === base ? baseURL : canvas.toDataURL('image/png');
         await showFinalStrip(dataURL, generation, isCurrent);
         if (!isCurrent()) return false;

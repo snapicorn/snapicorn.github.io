@@ -295,7 +295,7 @@ dialog::backdrop {
   }
 }
 
-/* Effective preference is owned by Settings. Keep image/sticker geometry intact. */
+/* Honor saved Reduce motion choices from earlier versions. */
 html[data-motion="reduce"],
 html[data-motion="reduce"] *,
 html[data-motion="reduce"] *::before,

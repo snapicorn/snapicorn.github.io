@@ -7,11 +7,15 @@ import { createHash } from 'node:crypto';
 const compositor = vm.createContext({});
 vm.runInContext(readFileSync(new URL('../scripts/composition.js', import.meta.url), 'utf8'), compositor);
 
-test('approved Cream Moonwalk bytes and geometry are exact; original historical frame and watermark survive', () => {
+test('approved Pastel Purple assets and geometry are exact; original historical frame and watermark survive', () => {
   const hash = bytes => createHash('sha256').update(bytes).digest('hex');
   const frame = readFileSync(new URL('../assets/frames/purple.png', import.meta.url));
-  assert.equal(hash(frame), '2ae9455c799d864a47da64b0daf949b8093d34a972e334797fc4b180e59fdcad');
+  assert.equal(hash(frame), 'd16f06fac83b087205d35eed3c1e8b79f88ab4e530b6b578b08db14df5ef0a9f');
   assert.deepEqual([frame.readUInt32BE(16), frame.readUInt32BE(20), frame[24], frame[25]], [700, 2090, 8, 6]);
+  assert.equal(hash(readFileSync(new URL('../assets/frames/purple.svg', import.meta.url))),
+    '8f22697d675132666dd5bc8e40c95e6fb8b01099a01f33d2c839e61a4e885c63');
+  assert.equal(hash(readFileSync(new URL('../assets/design/logo-minimal.png', import.meta.url))),
+    '91fe06e8fe83b9e989663585cb5a334faeac69fa12874605b9b422b323b53c57');
   assert.equal(hash(readFileSync(new URL('../assets/frames/historical/purple-legacy.png', import.meta.url))),
     '6b8e34b0d00bca71e0febc22f4c76e712468ddf8cbca0fecace16bea5b72e762');
   assert.equal(hash(readFileSync(new URL('../assets/logos/logo_transparent.png', import.meta.url))),
@@ -23,9 +27,12 @@ function createCanvas() {
   const layers = [];
   const canvas = {
     layers,
+    text: [],
     getContext: () => ({
       fillRect: (...rect) => layers.push({ image: { sample: () => 'white' }, rect }),
       drawImage: (image, ...rect) => layers.push({ image, rect }),
+      measureText: () => ({ width: 210 }),
+      fillText(...args) { canvas.text.push({ args, font: this.font, color: this.fillStyle }); },
     }),
     sample(x, y) {
       let pixel;
@@ -50,7 +57,7 @@ for (const [width, height, photoHeight, stripHeight] of [
     const photos = Array.from({ length: 4 }, (_, index) => ({
       width, height, sample: x => `${index + 1}-${x < 0.5 ? 'left' : 'right'}`,
     }));
-    const logo = { width: 400, height: 200, sample: () => 'watermark' };
+    const logo = { width: 1254, height: 1254, sample: () => 'logo' };
     const compose = () => compositor.composePhotoStrip(photos, logo, width, height, createCanvas);
     const canvas = compose();
     assert.equal(canvas.width, 700);
@@ -67,10 +74,9 @@ for (const [width, height, photoHeight, stripHeight] of [
       assert.equal(canvas.sample(650, y), 'white');
       assert.equal(canvas.sample(50, y + photoHeight), 'white');
     }
-    assert.deepEqual(canvas.layers[5].rect, [270, stripHeight - 115, 160, 80]);
     assert.equal(canvas.layers[5].image, logo);
-    assert.equal(canvas.sample(350, stripHeight - 75), 'watermark');
-    assert.equal(canvas.sample(269, stripHeight - 75), 'white');
+    assert.equal(canvas.sample(240, stripHeight - 80), 'logo');
+    assert.equal(canvas.sample(350, stripHeight - 80), 'white');
     const repeated = compose();
     for (let y = 0; y < stripHeight; y += 13) {
       for (let x = 0; x < 700; x += 17) assert.equal(canvas.sample(x, y), repeated.sample(x, y));
@@ -101,10 +107,18 @@ for (const [width, height, photoHeight, stripHeight] of [
   });
 }
 
-test('wide watermark retains the production maximum width and centered placement', () => {
-  const canvas = compositor.composePhotoStrip(Array(4).fill({}), { width: 1000, height: 100 },
+test('None centers the homepage icon and wordmark together in the footer', () => {
+  const canvas = compositor.composePhotoStrip(Array(4).fill({}), { width: 1254, height: 1254 },
     640, 480, createCanvas);
-  assert.deepEqual(canvas.layers[5].rect, [230, 2003, 240, 24]);
+  const [x, y, width, height] = canvas.layers[5].rect;
+  const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9);
+  near(width, height);
+  near(height, 63);
+  near(x + width / 2, 240);
+  near(y + height / 2, 2090 - 80);
+  assert.deepEqual(canvas.text, [{
+    args: ['snapicorn', 283, 2090 - 80], font: '600 50px "Fraunces"', color: '#332540',
+  }]);
 });
 
 test('invalid photo counts and dimensions fail before allocating output', () => {

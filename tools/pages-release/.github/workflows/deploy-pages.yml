@@ -1,0 +1,49 @@
+name: Deploy Snapicorn to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify release files and notices
+        shell: bash
+        run: |
+          test "$(wc -l < SHA256SUMS)" -eq 42
+          test -d site && test ! -L site
+          test -z "$(find site \( ! -type f ! -type d -o -type f -links +1 \) -print)"
+          for notice in dm-sans-OFL.txt fraunces-OFL.txt phosphor-MIT.txt; do
+            test -s "site/assets/licenses/$notice"
+          done
+          (cd site && find . -type f -printf '%P\0' | LC_ALL=C sort -z | xargs -0 -r sha256sum) > "$RUNNER_TEMP/site-sha256"
+          diff -u SHA256SUMS "$RUNNER_TEMP/site-sha256"
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy verified artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,8 +1,10 @@
 # PRO-86 local static package
 
+The [Settings-removal release candidate](#settings-removal-release-candidate) supersedes the earlier handoffs below.
+
 Implemented and verified on 30 October 2026 (Asia/Manila), using Node.js 24.22.0 on Windows. This package is **not yet publication-cleared**. Packaging approval permits local copies of active assets for verification; it does not establish redistribution rights or authorize deployment.
 
-For the current Cream Moonwalk asset, fifth historical exclusion and updated results, see the [31 October integration report](pro-86-cream-moonwalk.md) and the addendum below. The original implementation results remain as historical evidence.
+See the [Pastel Purple release candidate](#pastel-purple-release-candidate) for the current package. The [31 October integration report](pro-86-cream-moonwalk.md) and earlier results are retained as historical evidence.
 
 ## Generate and inspect
 
@@ -82,3 +84,50 @@ PRO-86 remains unresolved. PRO-64 and PRO-78 retain their statuses, dependencies
 ## Cream Moonwalk integration addendum — 31 October 2026
 
 The 30 October evidence above is historical. Current generation still uses exactly 43 allowlisted runtime files; `assets/frames/purple.png` is now the exact approved Cream Moonwalk PNG. A fifth explicit historical exclusion, `assets/frames/historical/purple-legacy.png`, retains the original Purple locally without distributing it. All `proposals/` files remain denied by default. No recursive asset copy or wildcard was introduced. Current all-resource byte comparisons and direct 404 checks at both mounts, plus exact asset hashes, are recorded in [integration verification](pro-86-cream-moonwalk.md). This local package remains **not publication-cleared**.
+
+## Pastel Purple release candidate
+
+This records the previous candidate. Use the [final footer handoff](#final-footer-stage-1-handoff) for the next redeployment.
+
+The owner approved the Pastel Purple PNG and editable SVG for integration on 4 November 2026. The PNG uses the existing runtime path. The allowlist still contains 43 files, with the editable SVG, proposals and five historical assets excluded. All 43 files match the rebuilt package manifest. Only `assets/frames/purple.png` differs from the previous release manifest.
+
+The browser verifier passed against the [Pastel Purple PNG and RGBA baselines](../test/fixtures/pastel-purple/baselines.json). All three None entries match the historical Cream Moonwalk baselines exactly. All 12 photo regions retain their pixels, and all 24 download checks match the preview PNG bytes. The 231-test suite passed, including byte and exclusion checks on loopback at `/`, `/snapicorn/` and `/snapicorn-release/`.
+
+The local handoff is staged at `dist/pages-release/`, with the complete verified payload under `site/` and [SHA256SUMS](../tools/pages-release/SHA256SUMS) beside it. It targets the separate release repository, `snapicorn/snapicorn-release`. Its `main` branch was checked at [670d7f8](https://github.com/snapicorn/snapicorn-release/commit/670d7f83fdb0ee1bddf39d99b4e2c1e5cf77a596), whose manifest matched the pre-integration package.
+
+After explicit deployment approval, confirm the release repository still has that baseline, apply the two-file update to `site/assets/frames/purple.png` and `SHA256SUMS`, then run **Deploy Snapicorn to GitHub Pages** on `main`. The workflow verifies all 43 file hashes before upload. Check the served Purple PNG hash and the excluded paths at the release URL after deployment. If rollback is needed, revert the two-file release commit and run the same workflow again.
+
+## Final footer Stage 1 handoff
+
+The locally prepared release is at `dist/pages-release-footer/`. Its `site/` has 42 allowlisted files, and [SHA256SUMS](../tools/pages-release/SHA256SUMS) lists the exact payload. The approved logo was already shipped at `assets/design/logo-minimal.png`; its bytes are unchanged.
+
+Compared with the retained previous Stage 1 package, copy these files to the same paths in the clean release repository:
+
+- `site/assets/frames/purple.png`
+- `site/scripts/composition.js`
+- `site/scripts/composition-coordinator.js`
+- `site/index.html` (includes the pre-existing development removal of the obsolete credits paragraph)
+- `SHA256SUMS`
+- `.github/workflows/deploy-pages.yml` (updates the expected payload count)
+
+Remove `site/assets/logos/logo_transparent.png` from the release repository's payload when applying the update. Do not copy editable sources, sample photos, tests, or proposals. If an older generated `dist/local-package/` still contains the legacy asset, archive that generated output before rebuilding; the packager intentionally refuses to clean unexpected entries.
+
+Run `npm test`, `npm run lint` and `node tools/verify-frame-pixels.js` for the development checks. The browser verifier checks PNG and RGBA baselines, untouched photo regions, and preview/download equality. To check the approved footer pixels as well, set `FRAME_APPROVAL_DIR` to the directory containing the owner review PNGs and sample contact sheet, then run the same verifier. Native share and Gallery paths are covered by the application tests; the browser fixture does not invoke the device share sheet or use existing Gallery data.
+
+After separate approval, confirm the release repository's current manifest, apply the update there, and run **Deploy Snapicorn to GitHub Pages** on its `main` branch. Verify the served PNG and the absence of the legacy watermark at the Stage 1 URL. The production root is outside this release. To roll back, revert the release commit and run the same workflow.
+
+## Settings-removal release candidate
+
+Run `npm run package:local` from the development checkout. The regenerated payload has 42 files. It removes `scripts/settings.js` and includes `scripts/motion.js` to honor an existing Reduce motion choice. CSS continues to follow the OS preference. Gallery and About explain local storage and photo privacy. The [release manifest](../tools/pages-release/SHA256SUMS) lists the 42 exact SHA-256 hashes, including the three bundled license notices.
+
+The [Stage 1 commit](https://github.com/snapicorn/snapicorn-release/commit/aad399a8d0de88ac8e336c981cebc656eaaaa362) applies only the Settings removal and manifest update. The [manual deployment](https://github.com/snapicorn/snapicorn-release/actions/runs/41826885122) passed. All 42 hosted payload hashes and the directory index match the manifest, and 23 excluded URLs returned 404. The hosted Chromium run used a fresh profile and a synthetic camera. It passed four captures, retake cancel and accept, both frames at three aspect ratios, approved footer pixels, exact preview/download bytes, Gallery save/reload/preview/download/keep/delete, About, and OS and saved reduced-motion checks. The browser reported zero console and resource errors.
+
+The full suite passed 215 tests. Lint and Git diff checks passed. The six owner-performed hosted checks and earlier desktop physical-camera evidence retain their original scope. The release candidate still lacks the broader physical-device, camera recovery, and accessibility coverage recorded in PRO-64 and PRO-78.
+
+### Shared browser storage
+
+The root and Stage 1 use the same HTTPS origin. They share the `snapicorn-finished-gallery` IndexedDB database at version 1, the `finished-pngs` store, and any previously saved `snapicorn-motion-preference` value in the same browser profile. A Stage 1 save is visible at the root after cutover. An explicit deletion from either mount removes that same record. The cutover requires no key rename, data copy, reset, or schema upgrade. The old root build at `66d68b9` uses neither IndexedDB nor localStorage. During a rollback it cannot display Gallery records. They become visible again when the new Gallery is served.
+
+A disposable Chrome profile verified that saving at the local subdirectory, opening and downloading at the local root, explicitly deleting there, and returning to the subdirectory operate on the same record. The saved Reduce value and an unrelated localStorage entry survived navigation. Treat the real site origin as shared throughout the cutover and rollback. Use a fresh profile for all verification.
+
+The prepared local cutover runbook is `dist/root-cutover.md`. Production acceptance and the GitHub-side switch require the owner's release-scope decision and approval.

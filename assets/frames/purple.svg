@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="2090" viewBox="0 0 700 2090">
+  <title>Pastel Purple photostrip frame</title>
+  <defs>
+    <mask id="photo-safe-area" maskUnits="userSpaceOnUse" x="0" y="0" width="700" height="2090">
+      <rect width="700" height="2090" fill="white"/>
+      <rect x="46" y="28" width="608" height="1975" fill="black"/>
+    </mask>
+    <linearGradient id="lavender-paper" x2="0" y2="100%">
+      <stop stop-color="#eee3fa"/>
+      <stop offset=".48" stop-color="#f0e6fa"/>
+      <stop offset=".91" stop-color="#eee3fa"/>
+      <stop offset="1" stop-color="#e9daf7"/>
+    </linearGradient>
+  </defs>
+  <g mask="url(#photo-safe-area)">
+    <rect width="700" height="2090" fill="url(#lavender-paper)"/>
+    <rect x="12" y="12" width="676" height="2066" rx="12"
+          fill="none" stroke="#ac8ac9" stroke-width="2"/>
+    <rect x="42" y="24" width="616" height="1983" fill="#f9f4fd"/>
+  </g>
+</svg>

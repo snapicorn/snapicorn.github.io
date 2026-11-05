@@ -72,7 +72,6 @@ for (const [id, dismiss] of [['retake-dialog', cancelRetake], ['restart-dialog',
   });
 }
 window.addEventListener('pagehide', () => exitPhotobooth());
-Settings.initialize();
 StickerEditor.initialize();
 Gallery.initialize();
 renderSession();
@@ -103,7 +102,6 @@ function renderSession() {
   document.getElementById('review-screen').style.display = inBooth && reviewing ? 'block' : 'none';
   document.getElementById('edit-screen').style.display = inBooth && ui.phase === 'customize' ? 'block' : 'none';
   document.getElementById('export-screen').style.display = inBooth && ui.phase === 'export' ? 'block' : 'none';
-  document.getElementById('settings-screen').style.display = ui.destination === 'settings' ? 'block' : 'none';
   document.getElementById('about-screen').style.display = ui.destination === 'about' ? 'block' : 'none';
   document.getElementById('gallery-screen').style.display = ui.destination === 'gallery' ? 'block' : 'none';
   const phase = ui.retake ? ui.retake.phase : ui.phase;
@@ -140,7 +138,6 @@ function focusDestination() {
   let heading = 'capture-heading';
   if (ui.destination === 'home') heading = 'home-heading';
   else if (ui.destination === 'about') heading = 'about-heading';
-  else if (ui.destination === 'settings') heading = 'settings-heading';
   else if (ui.destination === 'gallery') heading = 'gallery-heading';
   else if (ui.phase === 'review') heading = 'review-heading';
   else if (ui.phase === 'customize') heading = 'edit-heading';
@@ -168,7 +165,7 @@ function cancelTransientWork() {
 }
 
 function navigateTo(destination) {
-  if (!['home', 'booth', 'gallery', 'settings', 'about'].includes(destination)) return;
+  if (!['home', 'booth', 'gallery', 'about'].includes(destination)) return;
   if (destination === ui.destination && !ui.retake) {
     ui.menuOpen = false;
     renderNavigation();

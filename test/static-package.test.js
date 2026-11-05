@@ -26,7 +26,7 @@ test('package is exact, byte-identical and deterministic; source-only files neve
     mkdirSync(path.dirname(path.join(root, filename)), { recursive: true });
     writeFileSync(path.join(root, filename), 'source-only');
   }
-  assert.equal(packageFiles.length, 43);
+  assert.equal(packageFiles.length, 42);
   assert.equal(new Set(packageFiles).size, packageFiles.length);
   const output = buildPackage(root);
   assert.deepEqual(listPackageFiles(output), [...packageFiles].sort());
@@ -121,13 +121,13 @@ function referencedFiles() {
   return references;
 }
 
-test('generated directory serves every reference and notice, with historical URLs 404 at both mounts', async () => {
+test('generated directory serves every reference and notice, with source-only URLs 404 at every mount', async () => {
   const output = buildPackage(repositoryRoot);
   const references = referencedFiles();
-  assert.equal([...references].filter(filename => filename.startsWith('assets/')).length, 21);
+  assert.equal([...references].filter(filename => filename.startsWith('assets/')).length, 20);
   for (const filename of references) assert.ok(packageFiles.includes(filename), `Reference outside allowlist: ${filename}`);
   // Each server's filesystem root is the generated directory itself, with no SPA fallback.
-  for (const mount of ['/', '/snapicorn/']) {
+  for (const mount of ['/', '/snapicorn/', '/snapicorn-release/']) {
     const requests = [];
     const server = http.createServer((request, response) => {
       requests.push(request.url);
@@ -148,7 +148,13 @@ test('generated directory serves every reference and notice, with historical URL
         assert.equal(response.status, 200, `${mount}${filename}`);
         assert.deepEqual(Buffer.from(await response.arrayBuffer()), readFileSync(path.join(repositoryRoot, filename || 'index.html')));
       }
-      for (const filename of [...historicalExclusions, 'proposals/pro-86-purple-frame/b-cream-moonwalk.png', '.git/config', 'package.json', 'test/qa.html', 'docs/pro-64-verification.md']) {
+      for (const filename of [
+        ...historicalExclusions,
+        'assets/frames/purple.svg',
+        'proposals/pro-86-purple-frame/b-cream-moonwalk.png',
+        'proposals/pro-86-purple-frame/pastel-purple/purple.png',
+        '.git/config', 'package.json', 'test/qa.html', 'docs/pro-64-verification.md',
+      ]) {
         assert.equal((await fetch(new URL(filename, base))).status, 404, `${mount}${filename}`);
         assert.ok(requests.includes(`${mount}${filename}`));
       }
